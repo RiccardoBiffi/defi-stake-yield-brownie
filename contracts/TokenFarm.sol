@@ -10,10 +10,10 @@ contract TokenFarm is Ownable {
     function stakeTokens(uint256 _amount, address _token) public {
         // what token to stake?
         // how much? > 0
-        require(_amount > 0, "You can't stake an amount of 0 tokens");
+        require(_amount > 0, "Amount must be more than 0 tokens");
         require(
             isTokenAllowed(_token),
-            "This token is not allowed on the platform"
+            "Token not allowed on the platform yet"
         );
         stakedTokens += _amount;
     }
