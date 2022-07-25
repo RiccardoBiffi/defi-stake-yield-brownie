@@ -1,0 +1,12 @@
+__pycache__
+.pytest_cache
+.vscode
+.env
+.history
+.hypothesis/
+build/
+reports/
+
+# ignore generated files
+metadata/*
+!metadata/metadata_template.py
