@@ -1,0 +1,2 @@
+- We have a reward token.
+- We have a contract to un/stake token, issue tokens, allow tokens and get ETH value
