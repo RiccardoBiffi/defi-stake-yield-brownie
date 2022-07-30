@@ -16,7 +16,7 @@ ipfs:
 
 dependencies:
   # - <organizzation/repo>@<version> scaricate da GitHub
-  - smartcontractkit/chainlink-brownie-contracts@0.2.1
+  - smartcontractkit/chainlink-brownie-contracts@0.4.1
   - smartcontractkit/chainlink@1.2.1
   - OpenZeppelin/openzeppelin-contracts@4.7.1
 
@@ -24,7 +24,7 @@ compiler:
   # instruct the compiler that @chainlink points to GitHub
   solc:
     remappings:
-      - '@brownie-cl=smartcontractkit/chainlink-brownie-contracts@0.2.1'
+      - '@brownie-cl=smartcontractkit/chainlink-brownie-contracts@0.4.1'
       - '@chainlink=smartcontractkit/chainlink@1.2.1'
       - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.7.1'
 
