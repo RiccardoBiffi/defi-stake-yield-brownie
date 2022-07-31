@@ -11,4 +11,9 @@
     - We compute it by looping throught the allowed tokens.
     - Every time the user owns it, we get its price feed * amount and get its total vale
     - we need a mapping with what taken - it's chainlink priceFeed
-    - The summation of each token total value is the TVL 
+    - The summation of each token total value is the TVL
+
+- We allow 3 tokens initially:
+    - RWD (the reward token)
+    - WETH
+    - DAI (as fau_token for testing purposes)
