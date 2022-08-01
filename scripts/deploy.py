@@ -24,13 +24,13 @@ def deploy_token_farm_and_dapp_token():
 
     weth_token = get_contract(MockContract.WETH_TOKEN)
     fau_token = get_contract(MockContract.FAU_TOKEN)
-    allowed_token_addresses = {
+    allowed_token_addresses_and_feeds = {
         reward_token: get_contract(MockContract.DAI_USD_FEED),
         fau_token: get_contract(MockContract.DAI_USD_FEED),
         weth_token: get_contract(MockContract.ETH_USD_FEED),
     }
 
-    add_allowed_tokens(token_farm, allowed_token_addresses, account)
+    add_allowed_tokens(token_farm, allowed_token_addresses_and_feeds, account)
 
     return token_farm, reward_token
 

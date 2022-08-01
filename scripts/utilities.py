@@ -5,9 +5,9 @@ import eth_utils
 
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
-DECIMALS = 8
+DECIMALS = 18
 WETH_STARTING_PRICE = 2000 * 10**DECIMALS
-DAO_STARTING_PRICE = 1 * 10**DECIMALS
+DAI_STARTING_PRICE = 1 * 10**DECIMALS
 
 
 class MockContract(Enum):
@@ -70,10 +70,10 @@ def deploy_mock(contract_enum):
         MockWETH.deploy({"from": get_account()})
     elif contract_enum == MockContract.FAU_TOKEN:
         MockDAI.deploy({"from": get_account()})
-    elif contract_enum == MockContract.DAI_USD_FEED:
+    elif contract_enum == MockContract.ETH_USD_FEED:
         MockV3Aggregator.deploy(DECIMALS, WETH_STARTING_PRICE, {"from": get_account()})
-    elif contract_enum == MockContract.FAU_TOKEN:
-        MockV3Aggregator.deploy(DECIMALS, DAO_STARTING_PRICE, {"from": get_account()})
+    elif contract_enum == MockContract.DAI_USD_FEED:
+        MockV3Aggregator.deploy(DECIMALS, DAI_STARTING_PRICE, {"from": get_account()})
 
     print(f"Mock {contract_enum.value} deployed!\n")
 

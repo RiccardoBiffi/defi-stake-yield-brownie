@@ -17,13 +17,6 @@ contract TokenFarm is Ownable {
         rewardToken = IERC20(_rewardToken);
     }
 
-    function setTokenPriceFeed(address token, address priceFeed)
-        public
-        onlyOwner
-    {
-        token_priceFeed[token] = priceFeed;
-    }
-
     function stakeTokens(uint256 _amount, address _token) public {
         require(_amount > 0, "Amount must be more than 0 tokens");
         require(
@@ -87,6 +80,19 @@ contract TokenFarm is Ownable {
         return false;
     }
 
+    function updateUniqueTokensStaked(address user, address token) internal {
+        if (token_staker_amount[token][user] <= 0) {
+            staker_uniqueTokenNumber[user] += 1;
+        }
+    }
+
+    function setTokenPriceFeed(address token, address priceFeed)
+        public
+        onlyOwner
+    {
+        token_priceFeed[token] = priceFeed;
+    }
+
     function getUserTVL(address _user) public view returns (uint256) {
         require(staker_uniqueTokenNumber[_user] > 0, "No tokens staked");
         uint256 totalValue = 0;
@@ -122,12 +128,5 @@ contract TokenFarm is Ownable {
         uint256 decimals = priceFeed.decimals();
 
         return (uint256(price), decimals);
-    }
-
-    // update the number of unique tokens owned by user
-    function updateUniqueTokensStaked(address user, address token) internal {
-        if (token_staker_amount[token][user] <= 0) {
-            staker_uniqueTokenNumber[user] += 1;
-        }
     }
 }
