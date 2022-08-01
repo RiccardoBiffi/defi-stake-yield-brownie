@@ -80,12 +80,6 @@ contract TokenFarm is Ownable {
         return false;
     }
 
-    function updateUniqueTokensStaked(address user, address token) internal {
-        if (token_staker_amount[token][user] <= 0) {
-            staker_uniqueTokenNumber[user] += 1;
-        }
-    }
-
     function setTokenPriceFeed(address token, address priceFeed)
         public
         onlyOwner
@@ -128,5 +122,11 @@ contract TokenFarm is Ownable {
         uint256 decimals = priceFeed.decimals();
 
         return (uint256(price), decimals);
+    }
+
+    function updateUniqueTokensStaked(address user, address token) internal {
+        if (token_staker_amount[token][user] <= 0) {
+            staker_uniqueTokenNumber[user] += 1;
+        }
     }
 }
