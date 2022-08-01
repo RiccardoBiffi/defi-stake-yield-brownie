@@ -225,7 +225,7 @@ def test_check_token_allowed_false():
 
 # endregion
 
-
+# region setTokenPriceFeed
 def test_set_token_price_feed_success():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
@@ -260,3 +260,70 @@ def test_set_token_price_feed_fail_no_owner():
         token_farm.setTokenPriceFeed(
             reward_token.address, price_feed_addr, {"from": not_owner}
         )
+
+
+# endregion
+
+# region getUserTVL
+def test_get_user_tvl_success(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, _ = test_stake_token_success(amount_staked)
+
+    # Act
+    tvl = token_farm.getUserTVL(account.address, {"from": account})
+
+    # Assert
+    assert tvl == 10**DECIMALS
+
+
+def test_set_token_price_feed_fail_no_owner(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    no_owner = get_account(1)
+    token_farm, _ = test_stake_token_success(amount_staked)
+
+    # Act
+
+    # Assert
+    with pytest.raises(exceptions.VirtualMachineError):
+        token_farm.getUserTVL(no_owner.address, {"from": account})
+
+
+# endregion
+
+
+def test_get_user_token_value(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, reward_token = test_stake_token_success(amount_staked)
+
+    # Act
+    tvl = token_farm.getUserTokenValue(amount_staked, reward_token, {"from": account})
+
+    # Assert
+    assert tvl == 10**DECIMALS
+
+
+def test_get_token_value():
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, reward_token = deploy_token_farm_and_dapp_token()
+
+    # Act
+    tv = token_farm.getTokenValue(reward_token, {"from": account})
+
+    # Assert
+    assert tv == (10**DECIMALS, DECIMALS)
