@@ -17,3 +17,8 @@
     - RWD (the reward token)
     - WETH
     - DAI (as fau_token for testing purposes)
+
+- Usually the front_end stays on an other repository. We keep it here becouse it's simple enough
+    - node_module will be ignored
+    - public folder contains index.html, images and manifest
+    - src is where we work
