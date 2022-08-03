@@ -22,3 +22,5 @@
     - node_module will be ignored
     - public folder contains index.html, images and manifest
     - src is where we work
+    - the first time, install all packages with > yarn
+    - To start the front-end (from a script), > yarn start
