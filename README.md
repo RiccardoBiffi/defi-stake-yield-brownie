@@ -24,3 +24,9 @@
     - src is where we work
     - the first time, install all packages with > yarn
     - To start the front-end (from a script), > yarn start
+
+- We use React + MUI v5 with Emotion.
+
+- We need to send the chain IDs and the contracts address to the front-end to connect with them.
+    - We copy the brownie-config file for static addresses
+    - We copy the build folder for dynamic addresses (eg. my deployed contracts)

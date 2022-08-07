@@ -10,3 +10,5 @@ reports/
 # ignore generated files
 metadata/*
 !metadata/metadata_template.py
+front_end/src/chain_info
+front_end/src/brownie-config.json
