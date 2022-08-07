@@ -7,6 +7,7 @@ import brownieConfig from "../brownie-config.json";
 import rwd from "../dapp.png";
 import eth from "../eth.png";
 import dai from "../dai.png";
+import { YourWallet } from "./yourWallet/YourWallet";
 
 export type Token = {
     image: string;
@@ -68,6 +69,6 @@ export const Main = () => {
     ]
 
     return (
-        <div>Hi</div>
+        <YourWallet supportedTokens={supportedTokens} />
     )
 }
