@@ -30,3 +30,5 @@
 - We need to send the chain IDs and the contracts address to the front-end to connect with them.
     - We copy the brownie-config file for static addresses
     - We copy the build folder for dynamic addresses (eg. my deployed contracts)
+
+- An hook is like a component but more functionality-oriented
