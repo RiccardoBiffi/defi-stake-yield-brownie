@@ -3,6 +3,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Token } from "../Main";
 import React, { useState } from "react";
 import { WalletBalance } from "./WalletBalance";
+import { StakeForm } from "./StakeForm";
 
 interface YourWalletProps {
   supportedTokens: Array<Token>;
@@ -35,6 +36,7 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
               <TabPanel value={i.toString()} key={i}>
                 <div>
                   <WalletBalance token={token} />
+                  <StakeForm token={token} />
                 </div>
               </TabPanel>
             )
