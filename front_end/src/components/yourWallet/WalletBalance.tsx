@@ -1,5 +1,7 @@
 import { Token } from "../Main";
 import { useEthers, useTokenBalance } from "@usedapp/core";
+import { formatUnits } from "ethers/lib/utils";
+import { BalanceMsg } from "./BalanceMsg"
 
 
 export interface WalletBalanceProps {
@@ -7,11 +9,17 @@ export interface WalletBalanceProps {
 }
 
 export const WalletBalance = ({ token }: WalletBalanceProps) => {
-    const { image, address, name } = token;
+    const { image, address: token_addr, name } = token;
     const { account } = useEthers();
-    console.log(useTokenBalance(address, account)?.toString())
-
+    const tokenBalance = useTokenBalance(token_addr, account)?.toString()
+    const formattedTokenBalance: number =
+        tokenBalance ?
+            parseFloat(formatUnits(tokenBalance, 18)) :
+            0;
     return (
-        <p>I'm wallet balance</p>
+        <BalanceMsg
+            label={`Your un-staked ${name} balance`}
+            tokenImgSrc={image}
+            amount={formattedTokenBalance} />
     )
 }

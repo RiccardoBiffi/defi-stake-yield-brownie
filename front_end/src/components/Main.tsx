@@ -1,5 +1,4 @@
 import { useEthers } from "@usedapp/core";
-import styled from "@emotion/styled";
 import helper from "../helper-config.json";
 import networkMapping from "../chain_info/deployments/map.json"
 import { constants } from "ethers";
@@ -15,11 +14,6 @@ export type Token = {
     name: string;
 }
 
-const Container = styled.div`
-    padding: 8px;
-    display: flex;
-    justify-content: flex-end;
-`
 export const Main = () => {
     const { account, chainId } = useEthers();
     const network = chainId ? helper[chainId] : "dev";
