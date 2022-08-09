@@ -9,24 +9,24 @@ const Container = styled.div`
     justify-content: flex-end;
 `
 export const Header = () => {
-    const { account, activateBrowserWallet, deactivate } = useEthers();
-    const isConnected = account !== undefined;
+  const { account, activateBrowserWallet, deactivate } = useEthers();
+  const isConnected = account !== undefined;
 
-    return (
-        <Container >
-            <div>
-                {isConnected ? (
-                    <Button color="primary" variant="contained"
-                        onClick={() => deactivate()}>Disconnect</Button>
-                )
-                    : (
-                        <Button color="primary" variant="contained"
-                            onClick={() => activateBrowserWallet()}>
-                            Connect
-                        </Button>
-                    )
-                }
-            </div>
-        </Container >
-    )
+  return (
+    <Container >
+      <div>
+        {isConnected ? (
+          <Button color="primary" variant="contained"
+            onClick={() => deactivate()}>Disconnect</Button>
+        )
+          : (
+            <Button color="primary" variant="contained"
+              onClick={() => activateBrowserWallet()}>
+              Connect
+            </Button>
+          )
+        }
+      </div>
+    </Container >
+  )
 }
