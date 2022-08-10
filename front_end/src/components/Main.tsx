@@ -7,12 +7,20 @@ import rwd from "../dapp.png";
 import eth from "../eth.png";
 import dai from "../dai.png";
 import { YourWallet } from "./yourWallet/YourWallet";
+import styled from "@emotion/styled";
+
+const Title = styled.h2`
+    color: white;
+    text-align: center;
+    padding: 8px;
+`
 
 export type Token = {
     image: string;
     address: string;
     name: string;
 }
+
 
 export const Main = () => {
     const { account, chainId } = useEthers();
@@ -37,12 +45,7 @@ export const Main = () => {
     const daiUsdFeedAddress = chainId ?
         brownieConfig["networks"][network]["dai_usd_feed"] :
         constants.AddressZero;
-    // console.log(rewardTokenAddress);
-    // console.log(tokenFarmAddress);
-    // console.log(wethTokenAddress);
-    // console.log(daiTokenAddress);
-    // console.log(ethUsdFeedAddress);
-    // console.log(daiUsdFeedAddress);
+
 
     const supportedTokens: Array<Token> = [
         {
@@ -63,6 +66,9 @@ export const Main = () => {
     ]
 
     return (
-        <YourWallet supportedTokens={supportedTokens} />
+        <>
+            <Title>Dapp Token App</Title>
+            <YourWallet supportedTokens={supportedTokens} />
+        </>
     )
 }

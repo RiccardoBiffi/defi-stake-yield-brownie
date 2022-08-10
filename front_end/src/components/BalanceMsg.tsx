@@ -26,8 +26,8 @@ export const BalanceMsg = ({ label, tokenImgSrc, amount }: BalanceMsgProps) => {
     return (
         <Container>
             <h2>{label}</h2>
-            <TokenImg src={tokenImgSrc} alt="asd" />
             <Amount>{amount}</Amount>
+            <TokenImg src={tokenImgSrc} alt="asd" />
         </Container>
     )
 }

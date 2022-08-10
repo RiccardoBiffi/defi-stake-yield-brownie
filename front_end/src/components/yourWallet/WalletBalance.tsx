@@ -18,7 +18,7 @@ export const WalletBalance = ({ token }: WalletBalanceProps) => {
             0;
     return (
         <BalanceMsg
-            label={`Your un-staked ${name} balance`}
+            label={`Your un-staked ${name} balance is`}
             tokenImgSrc={image}
             amount={formattedTokenBalance} />
     )

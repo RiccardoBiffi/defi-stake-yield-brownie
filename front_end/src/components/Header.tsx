@@ -8,6 +8,13 @@ const Container = styled.div`
     display: flex;
     justify-content: flex-end;
 `
+
+const Account = styled(Button)`
+    margin-right: 8px;
+    color: white !important;
+    background-color: #1976d2 !important;
+`
+
 export const Header = () => {
   const { account, activateBrowserWallet, deactivate } = useEthers();
   const isConnected = account !== undefined;
@@ -16,8 +23,22 @@ export const Header = () => {
     <Container >
       <div>
         {isConnected ? (
-          <Button color="primary" variant="contained"
-            onClick={() => deactivate()}>Disconnect</Button>
+          <>
+            <Account
+              color="primary"
+              variant="contained"
+              disabled
+            >
+              {account}
+            </Account>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => deactivate()}>
+              Disconnect
+            </Button>
+
+          </>
         )
           : (
             <Button color="primary" variant="contained"

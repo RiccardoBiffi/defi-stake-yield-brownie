@@ -4,6 +4,21 @@ import { Token } from "../Main";
 import React, { useState } from "react";
 import { WalletBalance } from "./WalletBalance";
 import { StakeForm } from "./StakeForm";
+import styled from "@emotion/styled";
+
+const TabContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+`
+const Header = styled.h1`
+    color: white;
+`
+const TabContainer = styled(Box)`
+    background-color: white;
+    border-radius: 25px;
+`
 
 interface YourWalletProps {
   supportedTokens: Array<Token>;
@@ -11,15 +26,15 @@ interface YourWalletProps {
 
 export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
   // state hook: create variable and its setter as a component state
-  const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
+  const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0); // default is 0
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
     setSelectedTokenIndex(parseInt(newValue));
   }
 
   return (
     <Box>
-      <h1>Your wallet!</h1>
-      <Box>
+      <Header>Your wallet!</Header>
+      <TabContainer>
         <TabContext value={selectedTokenIndex.toString()}>
           <TabList onChange={handleChange} aria-label="stake form tabs">
             {supportedTokens.map((token, i) => {
@@ -34,15 +49,15 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
           {supportedTokens.map((token, i) => {
             return (
               <TabPanel value={i.toString()} key={i}>
-                <div>
+                <TabContent>
                   <WalletBalance token={token} />
                   <StakeForm token={token} />
-                </div>
+                </TabContent>
               </TabPanel>
             )
           })}
         </TabContext>
-      </Box>
+      </TabContainer>
     </Box>
 
   )
