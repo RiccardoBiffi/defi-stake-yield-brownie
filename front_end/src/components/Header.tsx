@@ -12,12 +12,17 @@ const Account = styled(Button)`
     margin-right: 8px;
     color: white !important;
     background-color: #1976d2 !important;
+    text-transform: initial;
 `
 
 export const Header = () => {
   const { account, activateBrowserWallet, deactivate, switchNetwork, chainId } = useEthers();
   const isConnected = !!account;
   const isCorrectChain = chainId === Kovan.chainId;
+
+  const prettyPrint = (address: string) => {
+    return address.slice(0, 6) + "..." + address.slice(address.length - 4, address.length);
+  }
 
   return (
     <Container >
@@ -39,7 +44,7 @@ export const Header = () => {
                 variant="contained"
                 disabled
               >
-                {account}
+                {prettyPrint(account)}
               </Account>
               <Button
                 color="primary"

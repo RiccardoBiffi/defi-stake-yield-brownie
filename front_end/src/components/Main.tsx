@@ -16,6 +16,12 @@ const Title = styled.h2`
     padding: 8px;
 `
 
+const Connect = styled.h3`
+    color: white;
+    text-align: center;
+    padding: 8px;
+`
+
 export type Token = {
     image: string;
     address: string;
@@ -77,9 +83,14 @@ export const Main = () => {
             <Title>Dapp Token App</Title>
             {isConnected && isCorrectChain ?
                 <YourWallet supportedTokens={supportedTokens} /> :
-                <div>Please login</div>
+                <Connect>
+                    {
+                        isCorrectChain ?
+                            "Please connect your wallet" :
+                            "Please switch network and then connect your wallet"
+                    }
+                </Connect>
             }
-
         </>
     )
 }
