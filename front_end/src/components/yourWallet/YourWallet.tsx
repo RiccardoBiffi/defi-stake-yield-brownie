@@ -3,21 +3,28 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Token } from "../Main";
 import React, { useState } from "react";
 import { WalletBalance } from "./WalletBalance";
+import { StakeBalance } from "./StakeBalance";
+import { Reward } from "./Reward";
 import { StakeForm } from "./StakeForm";
+import { UnstakeForm } from "./UnstakeForm";
 import styled from "@emotion/styled";
 
 const TabContent = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
-`
-const Header = styled.h1`
-    color: white;
+    display: inline-flex;
+    width: 50%;
 `
 const TabContainer = styled(Box)`
     background-color: white;
     border-radius: 25px;
+    flex-basis: 100%;
+`
+const BoxFlex = styled(Box)`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
 `
 
 interface YourWalletProps {
@@ -32,8 +39,12 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
   }
 
   return (
-    <Box>
-      <Header>Your wallet!</Header>
+    <BoxFlex>
+      <Reward token={
+        supportedTokens.find(token => {
+          return token.name === "RWD";
+        }
+        )} />
       <TabContainer>
         <TabContext value={selectedTokenIndex.toString()}>
           <TabList onChange={handleChange} aria-label="stake form tabs">
@@ -53,12 +64,15 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                   <WalletBalance token={token} />
                   <StakeForm token={token} />
                 </TabContent>
+                <TabContent>
+                  <StakeBalance token={token} />
+                  <UnstakeForm token={token} />
+                </TabContent>
               </TabPanel>
             )
           })}
         </TabContext>
       </TabContainer>
-    </Box>
-
+    </BoxFlex>
   )
 }
