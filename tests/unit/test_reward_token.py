@@ -10,13 +10,14 @@ def test_can_deploy_token():
 
     # Arrange
     account = get_account()
+    total_supply = 10**18
 
     # Act
-    rt = RewardToken.deploy(1 * 10**6, {"from": account})
+    rt = RewardToken.deploy(total_supply, {"from": account})
 
     # Assert
     assert rt.symbol() == "RWD"
     assert rt.decimals() == 18
     assert rt.name() == "Reward"
-    assert rt.totalSupply() == 10 ** (6 + 18)
+    assert rt.totalSupply() == total_supply
     assert rt.balanceOf(account) == rt.totalSupply()
