@@ -3,23 +3,23 @@ import helper from "../helper-config.json";
 import networkMapping from "../chain_info/deployments/map.json"
 import { constants } from "ethers";
 import brownieConfig from "../brownie-config.json";
-import rwd from "../dapp.png";
-import eth from "../eth.png";
-import dai from "../dai.png";
+import rwd from "../images/dapp.png";
+import eth from "../images/eth.png";
+import dai from "../images/dai.png";
 import { YourWallet } from "./yourWallet/YourWallet";
 import styled from "@emotion/styled";
-import { useContext } from "react";
 
-const Title = styled.h2`
+const Title = styled.h1`
     color: white;
     text-align: center;
     padding: 8px;
 `
 
-const Connect = styled.h3`
+const Connect = styled.h2`
     color: white;
     text-align: center;
     padding: 8px;
+    text-decoration: underline;
 `
 
 export type Token = {

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 const Container = styled.div`
     display: inline-grid;
     grid-template-columns: auto auto auto;
-    gap: 16px;
+    gap: 8px;
     align-items: center;
 `
 
@@ -12,7 +12,7 @@ const TokenImg = styled.img`
     width: auto;
 `
 
-const Amount = styled.p`
+const Amount = styled.h2`
     font-weight: 700;
 `
 
