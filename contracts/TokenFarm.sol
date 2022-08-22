@@ -10,7 +10,7 @@ contract TokenFarm is Ownable {
     address[] public allowedTokens;
     address[] public stakers;
     mapping(address => mapping(address => uint256)) public token_staker_amount;
-    mapping(address => uint256) public staker_uniqueTokenNumber;
+    mapping(address => uint256) public staker_distinctTokenNumber;
     mapping(address => address) public token_priceFeed;
 
     constructor(address _rewardToken) {
@@ -24,10 +24,10 @@ contract TokenFarm is Ownable {
             "Token not allowed on the platform yet"
         );
 
-        if (staker_uniqueTokenNumber[msg.sender] == 0) {
+        if (staker_distinctTokenNumber[msg.sender] == 0) {
             stakers.push(msg.sender);
         }
-        updateUniqueTokensStaked(msg.sender, _token);
+        updatedistinctTokensStaked(msg.sender, _token);
         token_staker_amount[_token][msg.sender] += _amount;
 
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
@@ -43,9 +43,9 @@ contract TokenFarm is Ownable {
         require(balance > 0, "staked balance is zero");
         IERC20(_token).transfer(msg.sender, balance);
         token_staker_amount[_token][msg.sender] = 0;
-        staker_uniqueTokenNumber[msg.sender]--;
+        staker_distinctTokenNumber[msg.sender]--;
 
-        if (staker_uniqueTokenNumber[msg.sender] == 0) {
+        if (staker_distinctTokenNumber[msg.sender] == 0) {
             for (uint256 i = 0; i < stakers.length; i++) {
                 if (stakers[i] == msg.sender) {
                     stakers[i] = stakers[stakers.length - 1];
@@ -88,7 +88,7 @@ contract TokenFarm is Ownable {
     }
 
     function getUserTVL(address _user) public view returns (uint256) {
-        require(staker_uniqueTokenNumber[_user] > 0, "No tokens staked");
+        require(staker_distinctTokenNumber[_user] > 0, "No tokens staked");
         uint256 totalValue = 0;
 
         for (uint256 i = 0; i < allowedTokens.length; i++) {
@@ -124,9 +124,9 @@ contract TokenFarm is Ownable {
         return (uint256(price), decimals);
     }
 
-    function updateUniqueTokensStaked(address user, address token) internal {
+    function updatedistinctTokensStaked(address user, address token) internal {
         if (token_staker_amount[token][user] <= 0) {
-            staker_uniqueTokenNumber[user] += 1;
+            staker_distinctTokenNumber[user] += 1;
         }
     }
 }
