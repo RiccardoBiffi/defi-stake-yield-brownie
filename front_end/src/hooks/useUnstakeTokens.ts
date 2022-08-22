@@ -3,7 +3,7 @@ import TokenFarm from "../chain_info/contracts/TokenFarm.json";
 import ERC20 from "../chain_info/contracts/dependencies/OpenZeppelin/openzeppelin-contracts@4.7.1/ERC20.json";
 import networkMapping from "../chain_info/deployments/map.json";
 import { constants, Contract, utils } from "ethers";
-import { useEffect, useState } from "react";
+
 
 export const useUnstakeTokens = (tokenAddress: string) => {
     const { chainId } = useEthers();
