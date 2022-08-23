@@ -88,17 +88,18 @@ contract TokenFarm is Ownable {
     }
 
     function getUserTVL(address _user) public view returns (uint256) {
-        require(staker_distinctTokenNumber[_user] > 0, "No tokens staked");
-        uint256 totalValue = 0;
+        if (staker_distinctTokenNumber[_user] > 0) {
+            uint256 totalValue = 0;
 
-        for (uint256 i = 0; i < allowedTokens.length; i++) {
-            address token = allowedTokens[i];
-            uint256 amount = token_staker_amount[token][_user];
-            if (amount > 0) {
-                totalValue += getUserTokenValue(amount, token);
+            for (uint256 i = 0; i < allowedTokens.length; i++) {
+                address token = allowedTokens[i];
+                uint256 amount = token_staker_amount[token][_user];
+                if (amount > 0) {
+                    totalValue += getUserTokenValue(amount, token);
+                }
             }
-        }
-        return totalValue;
+            return totalValue;
+        } else return 0;
     }
 
     function getUserTokenValue(uint256 amount, address token)
