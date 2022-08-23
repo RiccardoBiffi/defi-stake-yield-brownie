@@ -38,8 +38,6 @@ export const Main = () => {
     let supportedTokens: Array<Token> = [];
 
     if (isCorrectChain) {
-        console.log(chainId);
-        console.log(network);
         const rewardTokenAddress = chainId ?
             networkMapping[String(chainId)]["RewardToken"][0] :
             constants.AddressZero;
