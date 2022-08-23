@@ -1,16 +1,23 @@
 import { Token } from "../Main";
 import { useEthers, useTokenBalance, useNotifications, Notification } from "@usedapp/core";
 import { formatUnits } from "ethers/lib/utils";
-import { Alert, Button, CircularProgress, Input, Snackbar } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Input, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useStakeTokens } from "../../hooks/useStakeTokens";
 import { utils } from "ethers";
 import styled from "@emotion/styled";
+import { Container } from "@mui/system";
 
-const Stake = styled(Button)`
-    margin-top: 16px;
-    border: 1px solid #1976d2 !important;
+const StakeButton = styled(Button)`
+    margin-top: 20px;
+    border: 2px solid #1976d2 !important;
     border-radius: 8px;
+    font-weight: bold;
+`
+const MaxButton = styled(Button)`
+`
+const AmountInput = styled(Input)`
+  text-align-last: end;
 `
 
 export interface StakeFormProps {
@@ -40,6 +47,9 @@ export const StakeForm = ({ token }: StakeFormProps) => {
     const newAmount = event.target.value === "" ? "" : Number(event.target.value);
     setAmopunt(newAmount);
   }
+  const handleMaxAmount = () => {
+    setAmopunt(formattedTokenBalance);
+  }
 
   const { approveAndStake, overallState } = useStakeTokens(tokenAddr);
   const handleStakeSubmit = () => {
@@ -48,6 +58,8 @@ export const StakeForm = ({ token }: StakeFormProps) => {
   }
 
   const isValidating = overallState.status === "Mining";
+  const isDisabled = isValidating || formattedTokenBalance <= 0 || amount > formattedTokenBalance || !amount || amount <= 0;
+
   const [showERC20ApprovalSuccess, setShowERC20ApprovalSuccess] = useState<boolean>(false);
   const [showStakeTokenSuccess, setShowStakeTokenSuccess] = useState<boolean>(false);
 
@@ -73,18 +85,32 @@ export const StakeForm = ({ token }: StakeFormProps) => {
 
   return (
     <>
-      <Input onChange={handleInputChange} />
 
-      <Stake
+      <Box>
+        <AmountInput
+          type="number"
+          value={amount === 0 ? undefined : amount}
+          placeholder={formattedTokenBalance.toString()}
+          onChange={handleInputChange} />
+
+        <MaxButton
+          onClick={handleMaxAmount}
+          color="secondary"
+          size="small">
+          max
+        </MaxButton>
+      </Box>
+
+      <StakeButton
         onClick={handleStakeSubmit}
         color="primary"
         size="large"
-        disabled={isValidating}>
+        disabled={isDisabled}>
         {isValidating ?
           <CircularProgress size={26} />
           :
-          "Stake!!!"}
-      </Stake>
+          "Stake"}
+      </StakeButton>
 
       <Snackbar
         open={showERC20ApprovalSuccess}
