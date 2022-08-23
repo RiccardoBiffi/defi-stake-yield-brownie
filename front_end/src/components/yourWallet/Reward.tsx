@@ -1,9 +1,10 @@
 import { Token } from "../Main";
-import { constants, Contract, utils } from "ethers"
 import styled from "@emotion/styled";
 import { useGetUserTVL } from "../../hooks/useGetUserTVL";
 import { useEthers } from "@usedapp/core";
 import { formatUnits } from "ethers/lib/utils";
+import { ClickAwayListener, IconButton, Tooltip, tooltipClasses, TooltipProps } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const ContainerBackground = styled.div`
     margin: 8px 0;
@@ -18,8 +19,12 @@ const Container = styled.div`
 const RewardMsg = styled.div`
     background-color: white;
     border-radius: 25px;
-    font-size: 30px;
+    font-size: 28px;
     padding: 0 16px;
+`
+const Amount = styled.span`
+    font-weight: 700;
+    padding-right: 8px;
 `
 const TokenImg = styled.img`
     height: 32px;
@@ -27,13 +32,18 @@ const TokenImg = styled.img`
     position: relative;
     top: 4px;
 `
-const Amount = styled.span`
-    font-weight: 700;
-    padding-right: 8px;
+const InfoTooltip = styled(Tooltip)`
+    padding: 0;
+    position: relative;
+    top: -5px;
+    right: -7px;
+    background-color: red;
 `
 const Header = styled.h2`
     color: white;
 `
+
+const informationString = "You get 1 RWD for every USD of your TVL (Total Value Locked). You cannot withdraw them, the token issuance is decided by admins."
 
 export interface RewardProps {
     token: Token | undefined;
@@ -55,6 +65,19 @@ export const Reward = ({ token }: RewardProps) => {
                     token ?
                         <RewardMsg>Your accrued RWD is <Amount>{formattedUserTVL}</Amount>
                             <TokenImg src={token.image} alt={token.name} />
+
+                            <InfoTooltip
+                                title={informationString}
+                                placement="right"
+                                arrow
+                            >
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                >
+                                    <InfoOutlinedIcon />
+                                </IconButton>
+                            </InfoTooltip>
 
                         </RewardMsg>
 

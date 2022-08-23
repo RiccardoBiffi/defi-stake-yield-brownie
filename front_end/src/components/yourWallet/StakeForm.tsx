@@ -95,7 +95,7 @@ export const StakeForm = ({ token }: StakeFormProps) => {
 
         <MaxButton
           onClick={handleMaxAmount}
-          color="secondary"
+          color="primary"
           size="small">
           max
         </MaxButton>
