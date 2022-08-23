@@ -1,4 +1,4 @@
-import { Box, Tab } from "@mui/material";
+import { Box, Container, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Token } from "../Main";
 import React, { useState } from "react";
@@ -9,22 +9,34 @@ import { StakeForm } from "./StakeForm";
 import { UnstakeForm } from "./UnstakeForm";
 import styled from "@emotion/styled";
 
-const TabContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    display: inline-flex;
-    width: 50%;
+const TabContainerBackground = styled(Container)`
+    padding: 4px!important;
+    border-radius: 30px;
+    background: linear-gradient(-23deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
 `
 const TabContainer = styled(Box)`
     background-color: white;
     border-radius: 25px;
     flex-basis: 100%;
 `
+const TabListBorder = styled(TabList)`
+  border-bottom: 1px solid lightgray;
+`
+const TabContent = styled.div`
+    flex-direction: column;
+    align-items: center;
+    display: inline-flex;
+    flex: 1 1 0px;
+`
 const BoxFlex = styled(Box)`
     display: flex;
     flex-wrap: wrap;
     justify-content: end;
+`
+const VerticalLine = styled.div`
+    width: 4px;
+    background: linear-gradient(135deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
+    border-radius: 10px;
 `
 
 interface YourWalletProps {
@@ -45,34 +57,40 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
           return token.name === "RWD";
         }
         )} />
-      <TabContainer>
-        <TabContext value={selectedTokenIndex.toString()}>
-          <TabList onChange={handleChange} aria-label="stake form tabs">
+      <TabContainerBackground>
+        <TabContainer>
+          <TabContext value={selectedTokenIndex.toString()}>
+            <TabListBorder onChange={handleChange} aria-label="stake form tabs">
+              {supportedTokens.map((token, i) => {
+                return (
+                  <Tab
+                    label={token.name}
+                    value={i.toString()}
+                    key={i} />
+                )
+              })}
+            </TabListBorder>
             {supportedTokens.map((token, i) => {
               return (
-                <Tab
-                  label={token.name}
-                  value={i.toString()}
-                  key={i} />
+                <TabPanel value={i.toString()} key={i}>
+                  <BoxFlex>
+                    <TabContent>
+                      <WalletBalance token={token} />
+                      <StakeForm token={token} />
+                    </TabContent>
+                    <VerticalLine></VerticalLine>
+                    <TabContent>
+                      <StakeBalance token={token} />
+                      <UnstakeForm token={token} />
+                    </TabContent>
+                  </BoxFlex>
+                </TabPanel>
               )
             })}
-          </TabList>
-          {supportedTokens.map((token, i) => {
-            return (
-              <TabPanel value={i.toString()} key={i}>
-                <TabContent>
-                  <WalletBalance token={token} />
-                  <StakeForm token={token} />
-                </TabContent>
-                <TabContent>
-                  <StakeBalance token={token} />
-                  <UnstakeForm token={token} />
-                </TabContent>
-              </TabPanel>
-            )
-          })}
-        </TabContext>
-      </TabContainer>
+          </TabContext>
+        </TabContainer>
+      </TabContainerBackground>
+
     </BoxFlex>
   )
 }
