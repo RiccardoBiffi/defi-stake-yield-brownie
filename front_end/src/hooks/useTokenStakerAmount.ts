@@ -27,7 +27,7 @@ export function useTokenStakerAmount(
         ) ?? {}
     if (error) {
         console.error(error.message)
-        return undefined
+        return 0
     }
     return value?.[0]
 }

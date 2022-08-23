@@ -24,8 +24,8 @@ export function useGetUserTVL(
             }
         ) ?? {}
     if (error) {
-        console.error(error.message)
-        return undefined
+        console.error(error.message);
+        return 0;
     }
     return value?.[0]
 }
