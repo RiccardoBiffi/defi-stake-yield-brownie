@@ -13,6 +13,7 @@ const TabContainerBackground = styled(Container)`
     padding: 4px!important;
     border-radius: 30px;
     background: linear-gradient(-23deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
+    box-shadow: 0px 4px 25px 0px #00000088;
 `
 const TabContainer = styled(Box)`
     background-color: white;

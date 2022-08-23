@@ -10,6 +10,7 @@ const ContainerBackground = styled.div`
     margin: 8px 0;
     border-radius: 30px;
     background: linear-gradient(-23deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
+    box-shadow: 0px 2px 9px 0px #00000088;
 `
 const Container = styled.div`
     padding: 4px!important;
@@ -55,7 +56,6 @@ export const Reward = ({ token }: RewardProps) => {
         userTVL ?
             parseFloat(formatUnits(userTVL, 18)).toFixed(2) :
             "0";
-    console.log(userTVL);
 
     return (
         <ContainerBackground>
