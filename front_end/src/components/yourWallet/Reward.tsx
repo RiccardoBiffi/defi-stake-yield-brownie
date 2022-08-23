@@ -37,7 +37,6 @@ const InfoTooltip = styled(Tooltip)`
     position: relative;
     top: -5px;
     right: -7px;
-    background-color: red;
 `
 const Header = styled.h2`
     color: white;
