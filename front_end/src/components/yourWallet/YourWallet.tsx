@@ -79,7 +79,7 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                       <WalletBalance token={token} />
                       <StakeForm token={token} />
                     </TabContent>
-                    <VerticalLine></VerticalLine>
+                    <VerticalLine />
                     <TabContent>
                       <StakeBalance token={token} />
                       <UnstakeForm token={token} />

@@ -1,5 +1,5 @@
 import { Token } from "../Main";
-import { useEthers, useTokenBalance } from "@usedapp/core";
+import { useEthers } from "@usedapp/core";
 import { formatUnits } from "ethers/lib/utils";
 import { BalanceMsg } from "../BalanceMsg"
 import { useTokenStakerAmount } from "../../hooks/useTokenStakerAmount"
@@ -20,7 +20,7 @@ export const StakeBalance = ({ token }: StakeBalanceProps) => {
     return (
         <BalanceMsg
             label={`Your staked ${name} balance is`}
-            tokenImgSrc={image}
+            token={token}
             amount={formattedTokenBalance} />
     )
 }

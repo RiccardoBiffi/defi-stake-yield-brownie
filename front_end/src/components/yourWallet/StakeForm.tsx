@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { useStakeTokens } from "../../hooks/useStakeTokens";
 import { utils } from "ethers";
 import styled from "@emotion/styled";
-import { Container } from "@mui/system";
 
 const StakeButton = styled(Button)`
     margin-top: 20px;

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Token } from "./Main";
 
 const Container = styled.div`
     display: inline-grid;
@@ -8,7 +9,7 @@ const Container = styled.div`
 `
 
 const TokenImg = styled.img`
-    height: 32px;
+    height: 30px;
     width: auto;
 `
 
@@ -18,16 +19,16 @@ const Amount = styled.h2`
 
 export interface BalanceMsgProps {
     label: string;
-    tokenImgSrc: string;
+    token: Token;
     amount: number;
 }
 
-export const BalanceMsg = ({ label, tokenImgSrc, amount }: BalanceMsgProps) => {
+export const BalanceMsg = ({ label, token, amount }: BalanceMsgProps) => {
     return (
         <Container>
             <h2>{label}</h2>
             <Amount>{amount}</Amount>
-            <TokenImg src={tokenImgSrc} alt="asd" />
+            <TokenImg src={token.image} alt={token.name} />
         </Container>
     )
 }
