@@ -1,4 +1,3 @@
-from this import d
 import time
 from scripts.utilities import MockContract, get_account, get_contract
 from brownie import RewardToken, TokenFarm
