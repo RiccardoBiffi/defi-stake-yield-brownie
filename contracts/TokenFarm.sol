@@ -67,7 +67,7 @@ contract TokenFarm is Ownable {
     }
 
     function withdrawMyReward() public {
-        uint256 myReward = myAccruedReward();
+        uint256 myReward = getUserAccruedReward(msg.sender);
         require(myReward > 0, "You have not accrued enought RWD tokens");
 
         Stake[] memory myStakes = staker_stakes[msg.sender];
@@ -98,17 +98,17 @@ contract TokenFarm is Ownable {
         token_priceFeed[token] = priceFeed;
     }
 
-    function changeAPR(uint256 newAPR) public {
+    function setAPR(uint256 newAPR) public onlyOwner {
         APR = newAPR;
     }
 
-    function myTVL() public view returns (uint256) {
-        if (staker_distinctTokenNumber[msg.sender] > 0) {
+    function getUserTVL(address user) public view returns (uint256) {
+        if (staker_distinctTokenNumber[user] > 0) {
             uint256 totalValue = 0;
 
             for (uint256 i = 0; i < allowedTokens.length; i++) {
                 address token = allowedTokens[i];
-                uint256 amount = token_staker_amount[token][msg.sender];
+                uint256 amount = token_staker_amount[token][user];
                 if (amount > 0) {
                     totalValue += getUserTokenValue(amount, token);
                 }
@@ -117,11 +117,11 @@ contract TokenFarm is Ownable {
         } else return 0;
     }
 
-    function myAccruedReward() public view returns (uint256) {
-        if (staker_distinctTokenNumber[msg.sender] > 0) {
+    function getUserAccruedReward(address user) public view returns (uint256) {
+        if (staker_distinctTokenNumber[user] > 0) {
             uint256 totalReward = 0;
 
-            Stake[] memory myStake = staker_stakes[msg.sender];
+            Stake[] memory myStake = staker_stakes[user];
             for (uint256 i = 0; i < myStake.length; i++) {
                 uint256 annualTokenReward = 0;
                 uint256 accruedTokenReward = 0;
