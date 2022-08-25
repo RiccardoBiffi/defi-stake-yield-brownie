@@ -96,7 +96,7 @@ def test_unstake_token_success(amount_staked):
     token_farm, reward_token = test_stake_token_success(amount_staked)
     chain.sleep(1000)
     chain.mine(1)
-    reward = token_farm.myAccruedReward({"from": account})
+    reward = token_farm.getUserAccruedReward(account, {"from": account})
     previous_balance = reward_token.balanceOf(account)
 
     # Act
@@ -158,7 +158,7 @@ def test_withdraw_my_reward_success(amount_staked):
     starting_balance = reward_token.balanceOf(account)
     chain.sleep(1000)
     chain.mine(1)
-    reward = token_farm.myAccruedReward({"from": account})
+    reward = token_farm.getUserAccruedReward(account, {"from": account})
 
     # Act
     token_farm.withdrawMyReward({"from": account})
@@ -275,8 +275,8 @@ def test_set_token_price_feed_fail_no_owner():
 
 # endregion
 
-# region myTVL
-def test_my_tvl_more_than_zero(amount_staked):
+# region getUserTVL
+def test_get_user_tvl_more_than_zero(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -285,13 +285,13 @@ def test_my_tvl_more_than_zero(amount_staked):
     token_farm, _ = test_stake_token_success(amount_staked)
 
     # Act
-    tvl = token_farm.myTVL({"from": account})
+    tvl = token_farm.getUserTVL(account, {"from": account})
 
     # Assert
     assert tvl == 10**DECIMALS
 
 
-def test_my_tvl_zero():
+def test_get_user_tvl_zero():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -300,7 +300,7 @@ def test_my_tvl_zero():
     token_farm, _ = deploy_token_farm_and_dapp_token()
 
     # Act
-    tvl = token_farm.myTVL({"from": account})
+    tvl = token_farm.getUserTVL(account, {"from": account})
 
     # Assert
     assert tvl == 0
@@ -339,7 +339,7 @@ def test_get_token_value():
     assert tv == (10**DECIMALS, DECIMALS)
 
 
-def test_my_accrued_reward_zero():
+def test_get_user_accrued_reward_zero():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -348,13 +348,13 @@ def test_my_accrued_reward_zero():
     token_farm, _ = deploy_token_farm_and_dapp_token()
 
     # Act
-    ar = token_farm.myAccruedReward({"from": account})
+    ar = token_farm.getUserAccruedReward(account, {"from": account})
 
     # Assert
     assert ar == 0
 
 
-def test_my_accrued_reward_more_than_zero(amount_staked):
+def test_get_user_accrued_reward_more_than_zero(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -365,7 +365,39 @@ def test_my_accrued_reward_more_than_zero(amount_staked):
     chain.mine(1)
 
     # Act
-    ar = token_farm.myAccruedReward({"from": account})
+    ar = token_farm.getUserAccruedReward(account, {"from": account})
 
     # Assert
     assert ar > 0
+
+
+def test_set_APR_success():
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, _ = deploy_token_farm_and_dapp_token()
+    new_APR = 2000
+
+    # Act
+    token_farm.setAPR(new_APR, {"from": account})
+
+    # Assert
+    assert token_farm.APR() == new_APR
+
+
+def test_set_APR_fail_not_owner():
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    not_owner = get_account(1)
+    token_farm, _ = deploy_token_farm_and_dapp_token()
+    new_APR = 2000
+
+    # Act
+
+    # Assert
+    with pytest.raises(exceptions.VirtualMachineError):
+        token_farm.setAPR(new_APR, {"from": not_owner})
