@@ -69,13 +69,12 @@ contract TokenFarm is Ownable {
     function withdrawMyReward() public {
         uint256 myReward = getUserAccruedReward(msg.sender);
         require(myReward > 0, "You have not accrued enought RWD tokens");
+        rewardToken.transfer(msg.sender, myReward);
 
-        Stake[] memory myStakes = staker_stakes[msg.sender];
+        Stake[] storage myStakes = staker_stakes[msg.sender];
         for (uint256 i = 0; i < myStakes.length; i++) {
             myStakes[i].lastWithdrawTime = block.timestamp;
         }
-
-        rewardToken.transfer(msg.sender, myReward);
     }
 
     function addAllowedToken(address _token) public onlyOwner {

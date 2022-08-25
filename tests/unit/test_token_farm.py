@@ -166,6 +166,10 @@ def test_withdraw_my_reward_success(amount_staked):
 
     # Assert
     assert reward_token.balanceOf(account) == starting_balance + reward
+    chain.sleep(1000)
+    chain.mine(1)
+    reward = token_farm.getUserAccruedReward(account, {"from": account})
+    assert token_farm.getUserAccruedReward(account) == reward
 
 
 def test_withdraw_my_reward_fail_not_enought():
