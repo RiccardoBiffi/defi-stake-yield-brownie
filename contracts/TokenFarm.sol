@@ -123,19 +123,24 @@ contract TokenFarm is Ownable {
 
             Stake[] memory myStake = staker_stakes[user];
             for (uint256 i = 0; i < myStake.length; i++) {
-                uint256 annualTokenReward = 0;
-                uint256 accruedTokenReward = 0;
+                uint256 stakeAnnualValue = 0;
+                uint256 accruedValue = 0;
+                address token = myStake[i].token;
                 uint256 amount = myStake[i].amount;
-                annualTokenReward = (amount * APR) / 10**4;
                 uint256 stakeTime = myStake[i].lastWithdrawTime;
+
+                uint256 tvlStake = getUserTokenValue(amount, token);
+                stakeAnnualValue = (tvlStake * APR) / 10**4;
+
                 uint256 year = 365 days;
-                uint256 timePassedSinceStake = block.timestamp - stakeTime;
-                uint256 accruedSoFarPercent = (timePassedSinceStake * 10**9) /
-                    year;
-                accruedTokenReward =
-                    (annualTokenReward * accruedSoFarPercent) /
-                    10**9;
-                totalReward += accruedTokenReward;
+                uint256 timeSinceStake = block.timestamp - stakeTime;
+                uint256 accruedSoFarPercent = (timeSinceStake * 10**9) / year;
+
+                accruedValue = (stakeAnnualValue * accruedSoFarPercent) / 10**9;
+                totalReward += getTokenFromValue(
+                    accruedValue,
+                    address(rewardToken)
+                );
             }
             return totalReward;
         } else return 0;
@@ -147,7 +152,16 @@ contract TokenFarm is Ownable {
         returns (uint256)
     {
         (uint256 price, uint256 decimals) = getTokenValue(token);
-        return (amount * price) / 10**decimals;
+        return (amount * price) / 10**(decimals);
+    }
+
+    function getTokenFromValue(uint256 amount, address token)
+        public
+        view
+        returns (uint256)
+    {
+        (uint256 price, uint256 decimals) = getTokenValue(token);
+        return (amount * 10**decimals) / price;
     }
 
     function getTokenValue(address token)
