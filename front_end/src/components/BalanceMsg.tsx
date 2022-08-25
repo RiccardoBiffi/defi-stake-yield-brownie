@@ -20,7 +20,7 @@ const Amount = styled.h2`
 export interface BalanceMsgProps {
     label: string;
     token: Token;
-    amount: number;
+    amount: string;
 }
 
 export const BalanceMsg = ({ label, token, amount }: BalanceMsgProps) => {

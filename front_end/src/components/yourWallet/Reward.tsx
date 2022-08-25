@@ -8,6 +8,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useGetUserTVL } from "../../hooks/useGetUserTVL";
 import { BigNumberish } from "ethers";
 import { useGetAPR } from "../../hooks/useGetAPR";
+import { formatBigNumber } from "../../utils";
 
 const ContainerBackground = styled.div`
     width: 100%;
@@ -60,13 +61,8 @@ const Header = styled.h2`
     color: white;
 `
 
-
 export interface RewardProps {
   token: Token | undefined;
-}
-
-function formatBigNumber(number: BigNumberish | undefined, decimals: number, show = 2) {
-  return number ? parseFloat(formatUnits(number, decimals)).toFixed(show) : "0";
 }
 
 export const Reward = ({ token }: RewardProps) => {
