@@ -1,34 +1,51 @@
 import { Token } from "../Main";
 import styled from "@emotion/styled";
-import { useGetUserTVL } from "../../hooks/useGetUserTVL";
+import { useGetUserAccruedReward } from "../../hooks/useGetUserAccruedReward";
 import { useEthers } from "@usedapp/core";
 import { formatUnits } from "ethers/lib/utils";
-import { ClickAwayListener, IconButton, Tooltip, tooltipClasses, TooltipProps } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useGetUserTVL } from "../../hooks/useGetUserTVL";
+import { BigNumberish } from "ethers";
+import { useGetAPR } from "../../hooks/useGetAPR";
 
 const ContainerBackground = styled.div`
-    margin: 8px 0;
+    width: 100%;
+    padding: 4px;
+    margin: 16px 0;
     border-radius: 30px;
     background: linear-gradient(-23deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
     box-shadow: 0px 2px 9px 0px #00000088;
 `
 const Container = styled.div`
-    padding: 4px!important;
-    display: flex;
-    align-items: center;
-`
-const RewardMsg = styled.div`
     background-color: white;
     border-radius: 25px;
+    padding: 8px;
+    display: flex;
+`
+const Section = styled.div`
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    display: inline-flex;
+    flex: 1 1 0px;
     font-size: 28px;
+    padding: 0 16px;
+`
+const VerticalLine = styled.div`
+    width: 4px;
+    background: linear-gradient(135deg, hsl(237, 61%, 15%), hsl(188, 61%, 30%), hsl(136, 39%, 37%));
+    border-radius: 10px;
+`
+const Message = styled.div`
+    font-size: 20px;
     padding: 0 16px;
 `
 const Amount = styled.span`
     font-weight: 700;
-    padding-right: 8px;
 `
 const TokenImg = styled.img`
-    height: 32px;
+    height: 30px;
     width: auto;
     position: relative;
     top: 4px;
@@ -36,54 +53,81 @@ const TokenImg = styled.img`
 const InfoTooltip = styled(Tooltip)`
     padding: 0;
     position: relative;
-    top: -5px;
-    right: -7px;
+    top: -2px;
+    right: -5px;
 `
 const Header = styled.h2`
     color: white;
 `
 
-const informationString = "You get 1 RWD for every USD of your TVL (Total Value Locked). You cannot withdraw them, the token issuance is decided by admins."
 
 export interface RewardProps {
-    token: Token | undefined;
+  token: Token | undefined;
+}
+
+function formatBigNumber(number: BigNumberish | undefined, decimals: number, show = 2) {
+  return number ? parseFloat(formatUnits(number, decimals)).toFixed(show) : "0";
 }
 
 export const Reward = ({ token }: RewardProps) => {
-    const { account } = useEthers();
-    const userTVL = useGetUserTVL(account);
-    const formattedUserTVL: string =
-        userTVL ?
-            parseFloat(formatUnits(userTVL, 18)).toFixed(2) :
-            "0";
+  const { account } = useEthers();
+  const myTVL = useGetUserTVL(account);
+  const apr = useGetAPR();
+  const myReward = useGetUserAccruedReward(account);
 
-    return (
-        <ContainerBackground>
-            <Container>
-                {
-                    token ?
-                        <RewardMsg>Your accrued RWD is <Amount>{formattedUserTVL}</Amount>
-                            <TokenImg src={token.image} alt={token.name} />
+  const myTVLFormatted = formatBigNumber(myTVL, 18);
+  const myAPRFormatted = formatBigNumber(apr, 2);
+  const myRewardFormatted = formatBigNumber(myReward, 18, 6);
 
-                            <InfoTooltip
-                                title={informationString}
-                                placement="right"
-                                arrow
-                            >
-                                <IconButton
-                                    size="small"
-                                    color="primary"
-                                >
-                                    <InfoOutlinedIcon />
-                                </IconButton>
-                            </InfoTooltip>
+  const informationString = `Enjoy ${myAPRFormatted}% APR on your TVL!`;
 
-                        </RewardMsg>
 
-                        :
-                        <Header>An error occured</Header>
-                }
-            </Container>
-        </ContainerBackground>
-    );
+  return (
+    <ContainerBackground>
+      <Container>
+        <Section>
+          <Message>Your TVL</Message>
+          <Amount>{myTVLFormatted} $</Amount>
+        </Section>
+        <VerticalLine />
+        <Section>
+          <Message>
+            APR
+          </Message>
+          <Amount>
+            {myAPRFormatted}%
+          </Amount>
+        </Section>
+        <VerticalLine />
+        <Section>
+          {
+            token ?
+              <>
+                <Message>
+                  Your RWD
+                  <InfoTooltip
+                    title={informationString}
+                    placement="right"
+                    arrow
+                  >
+                    <IconButton
+                      size="small"
+                      color="primary"
+                    >
+                      <InfoOutlinedIcon />
+                    </IconButton>
+                  </InfoTooltip>
+                </Message>
+                <div>
+                  <Amount>{myRewardFormatted} </Amount>
+                  <TokenImg src={token.image} alt={token.name} />
+                </div>
+              </>
+              :
+              <Header>An error occured</Header>
+          }
+        </Section>
+      </Container>
+    </ContainerBackground>
+  );
 }

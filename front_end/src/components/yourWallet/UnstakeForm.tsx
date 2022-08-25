@@ -1,6 +1,7 @@
 import { Token } from "../Main";
 import { useNotifications, Notification, useEthers } from "@usedapp/core";
-import { Alert, Button, CircularProgress, Input, Snackbar } from "@mui/material";
+import { Alert, Button, CircularProgress, Tooltip, IconButton, Snackbar } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useEffect, useState } from "react";
 import { useUnstakeTokens } from "../../hooks/useUnstakeTokens";
 import styled from "@emotion/styled";
@@ -13,7 +14,12 @@ const UnstakeButton = styled(Button)`
     border-radius: 8px;
     font-weight: bold;
 `
-
+const InfoTooltip = styled(Tooltip)`
+    padding: 0;
+    position: relative;
+    top: 8px;
+    right: -7px;
+`
 export interface StakeFormProps {
     token: Token;
 }
@@ -25,6 +31,8 @@ function isTransactionSucceeded(notifications: Notification[], transactionName: 
             notification.transactionName === transactionName
     ).length > 0;
 }
+
+const informationString = "When you unstake you automatically withdraw your accrued RWD"
 
 export const UnstakeForm = ({ token }: StakeFormProps) => {
     const { account } = useEthers();
@@ -58,16 +66,30 @@ export const UnstakeForm = ({ token }: StakeFormProps) => {
 
     return (
         <>
-            <UnstakeButton
-                onClick={handleUnstakeSubmit}
-                color="primary"
-                size="large"
-                disabled={isValidating || formattedTokenBalance <= 0}>
-                {isValidating ?
-                    <CircularProgress size={26} />
-                    :
-                    "Unstake"}
-            </UnstakeButton>
+            <div>
+                <UnstakeButton
+                    onClick={handleUnstakeSubmit}
+                    color="primary"
+                    size="large"
+                    disabled={isValidating || formattedTokenBalance <= 0}>
+                    {isValidating ?
+                        <CircularProgress size={26} />
+                        :
+                        "Unstake"}
+                </UnstakeButton>
+                <InfoTooltip
+                    title={informationString}
+                    placement="right"
+                    arrow
+                >
+                    <IconButton
+                        size="small"
+                        color="primary"
+                    >
+                        <InfoOutlinedIcon />
+                    </IconButton>
+                </InfoTooltip>
+            </div>
 
             <Snackbar
                 open={showUnstakeTokenSuccess}
