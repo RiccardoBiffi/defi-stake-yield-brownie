@@ -1,4 +1,4 @@
-from brownie import network, exceptions
+from brownie import network, exceptions, chain
 import pytest
 from scripts.utilities import (
     MockContract,
@@ -35,14 +35,16 @@ def test_stake_token_success(amount_staked):
 
     # Act
     reward_token.approve(token_farm.address, amount_staked, {"from": account})
-    token_farm.stakeTokens(amount_staked, reward_token.address, {"from": account})
+    tx = token_farm.stakeTokens(amount_staked, reward_token.address, {"from": account})
+    (token, amount, _) = token_farm.staker_stakes(account.address, 0)
 
     # Assert
+    assert token_farm.stakers(0) == account
+    assert token_farm.staker_distinctTokenNumber(account) == 1
+    assert (token, amount, _) == (reward_token.address, amount_staked, _)
     assert (
         token_farm.token_staker_amount(reward_token.address, account) == amount_staked
     )
-    assert token_farm.stakers(0) == account
-    assert token_farm.staker_uniqueTokenNumber(account) == 1
     assert (
         reward_token.balanceOf(token_farm.address) - previous_balance == amount_staked
     )
@@ -92,15 +94,21 @@ def test_unstake_token_success(amount_staked):
     # Arrange
     account = get_account()
     token_farm, reward_token = test_stake_token_success(amount_staked)
+    chain.sleep(1000)
+    chain.mine(1)
+    reward = token_farm.myAccruedReward({"from": account})
     previous_balance = reward_token.balanceOf(account)
 
     # Act
-    token_farm.unstakeTokens(reward_token.address, {"from": account})
+    token_farm.unstakeTokenAndWithdrawMyReward(reward_token.address, {"from": account})
 
     # Assert
-    assert reward_token.balanceOf(account) == previous_balance + amount_staked
+    assert reward_token.balanceOf(account) == previous_balance + amount_staked + reward
     assert token_farm.token_staker_amount(reward_token.address, account) == 0
-    assert token_farm.staker_uniqueTokenNumber(account) == 0
+    assert token_farm.staker_distinctTokenNumber(account) == 0
+    # hack check for empty myStakes array
+    with pytest.raises(exceptions.VirtualMachineError):
+        assert token_farm.staker_stakes(account.address, 0)
     # hack check for empty stakers array
     with pytest.raises(exceptions.VirtualMachineError):
         assert token_farm.stakers(0)
@@ -119,7 +127,7 @@ def test_unstake_token_fail_not_allowed():
 
     # Assert
     with pytest.raises(exceptions.VirtualMachineError):
-        token_farm.unstakeTokens(not_allowed_token, {"from": account})
+        token_farm.unstakeTokenAndWithdrawMyReward(not_allowed_token, {"from": account})
 
 
 def test_unstake_token_fail_zero_balance():
@@ -134,13 +142,13 @@ def test_unstake_token_fail_zero_balance():
 
     # Assert
     with pytest.raises(exceptions.VirtualMachineError):
-        token_farm.unstakeTokens(reward_token, {"from": account})
+        token_farm.unstakeTokenAndWithdrawMyReward(reward_token, {"from": account})
 
 
 # endregion
 
 # region issueRerwardTokens
-def test_issue_reward_tokens_success(amount_staked):
+def test_withdraw_my_reward_success(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -148,27 +156,30 @@ def test_issue_reward_tokens_success(amount_staked):
     account = get_account()
     token_farm, reward_token = test_stake_token_success(amount_staked)
     starting_balance = reward_token.balanceOf(account)
+    chain.sleep(1000)
+    chain.mine(1)
+    reward = token_farm.myAccruedReward({"from": account})
 
     # Act
-    token_farm.issueRewardTokens({"from": account})
+    token_farm.withdrawMyReward({"from": account})
 
     # Assert
-    assert reward_token.balanceOf(account) == starting_balance + 10**DECIMALS
+    assert reward_token.balanceOf(account) == starting_balance + reward
 
 
-def test_issue_reward_tokens_fail_no_owner():
+def test_withdraw_my_reward_fail_not_enought():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
-    not_owner = get_account(1)
+    account = get_account()
     token_farm, _ = deploy_token_farm_and_dapp_token()
 
     # Act
 
     # Assert
     with pytest.raises(exceptions.VirtualMachineError):
-        token_farm.issueRewardTokens({"from": not_owner})
+        token_farm.withdrawMyReward({"from": account})
 
 
 # endregion
@@ -264,8 +275,8 @@ def test_set_token_price_feed_fail_no_owner():
 
 # endregion
 
-# region getUserTVL
-def test_get_user_tvl_success(amount_staked):
+# region myTVL
+def test_my_tvl_more_than_zero(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -274,26 +285,25 @@ def test_get_user_tvl_success(amount_staked):
     token_farm, _ = test_stake_token_success(amount_staked)
 
     # Act
-    tvl = token_farm.getUserTVL(account.address, {"from": account})
+    tvl = token_farm.myTVL({"from": account})
 
     # Assert
     assert tvl == 10**DECIMALS
 
 
-def test_set_token_price_feed_fail_no_owner(amount_staked):
+def test_my_tvl_zero():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    no_owner = get_account(1)
-    token_farm, _ = test_stake_token_success(amount_staked)
+    token_farm, _ = deploy_token_farm_and_dapp_token()
 
     # Act
+    tvl = token_farm.myTVL({"from": account})
 
     # Assert
-    with pytest.raises(exceptions.VirtualMachineError):
-        token_farm.getUserTVL(no_owner.address, {"from": account})
+    assert tvl == 0
 
 
 # endregion
@@ -327,3 +337,35 @@ def test_get_token_value():
 
     # Assert
     assert tv == (10**DECIMALS, DECIMALS)
+
+
+def test_my_accrued_reward_zero():
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, _ = deploy_token_farm_and_dapp_token()
+
+    # Act
+    ar = token_farm.myAccruedReward({"from": account})
+
+    # Assert
+    assert ar == 0
+
+
+def test_my_accrued_reward_more_than_zero(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, _ = test_stake_token_success(amount_staked)
+    chain.sleep(1000)
+    chain.mine(1)
+
+    # Act
+    ar = token_farm.myAccruedReward({"from": account})
+
+    # Assert
+    assert ar > 0
