@@ -21,7 +21,7 @@ export const useUnstakeTokens = (tokenAddress: string) => {
 
     //unstake
     const { send: unstakeSend, state: unstakeState } =
-        useContractFunction(tokenFarm, "unstakeTokens", { transactionName: "Unstake tokens" });
+        useContractFunction(tokenFarm, "unstakeTokenAndWithdrawMyReward", { transactionName: "Unstake tokens" });
 
     return { unstakeSend, unstakeState }
 }

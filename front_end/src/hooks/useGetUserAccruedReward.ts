@@ -4,7 +4,7 @@ import networkMapping from "../chain_info/deployments/map.json";
 import TokenFarm from "../chain_info/contracts/TokenFarm.json";
 
 
-export function useGetUserTVL(
+export function useGetUserAccruedReward(
     userAddress: string | Falsy,
 ) {
     const { chainId } = useEthers();
@@ -16,12 +16,13 @@ export function useGetUserTVL(
     const tokenFarmInterface = new utils.Interface(tf_abi);
 
     const { value, error } =
+
         useCall(
             userAddress &&
             {
                 contract: new Contract(tokenFarmAddr, tokenFarmInterface),
-                method: 'getUserTVL',
-                args: [userAddress]
+                method: 'getUserAccruedReward',
+                args: [userAddress],
             }
         ) ?? {}
     if (error) {

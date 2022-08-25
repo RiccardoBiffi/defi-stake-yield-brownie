@@ -4,8 +4,7 @@ import networkMapping from "../chain_info/deployments/map.json";
 import TokenFarm from "../chain_info/contracts/TokenFarm.json";
 
 
-export function useGetUserTVL(
-    userAddress: string | Falsy,
+export function useGetAPR(
 ) {
     const { chainId } = useEthers();
     const { abi: tf_abi } = TokenFarm;
@@ -17,11 +16,10 @@ export function useGetUserTVL(
 
     const { value, error } =
         useCall(
-            userAddress &&
             {
                 contract: new Contract(tokenFarmAddr, tokenFarmInterface),
-                method: 'getUserTVL',
-                args: [userAddress]
+                method: 'APR',
+                args: []
             }
         ) ?? {}
     if (error) {
