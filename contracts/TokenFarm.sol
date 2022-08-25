@@ -75,7 +75,7 @@ contract TokenFarm is Ownable {
             myStakes[i].lastWithdrawTime = block.timestamp;
         }
 
-        rewardToken.transfer(address(this), myReward);
+        rewardToken.transfer(msg.sender, myReward);
     }
 
     function addAllowedToken(address _token) public onlyOwner {
@@ -125,19 +125,16 @@ contract TokenFarm is Ownable {
             for (uint256 i = 0; i < myStake.length; i++) {
                 uint256 annualTokenReward = 0;
                 uint256 accruedTokenReward = 0;
-                address token = myStake[i].token;
                 uint256 amount = myStake[i].amount;
+                annualTokenReward = (amount * APR) / 10**4;
                 uint256 stakeTime = myStake[i].lastWithdrawTime;
-                annualTokenReward =
-                    (getUserTokenValue(amount, token) * APR) /
-                    10**4;
                 uint256 year = 365 days;
                 uint256 timePassedSinceStake = block.timestamp - stakeTime;
-                uint256 accruedSoFarPercent = (timePassedSinceStake * 10**4) /
+                uint256 accruedSoFarPercent = (timePassedSinceStake * 10**9) /
                     year;
                 accruedTokenReward =
                     (annualTokenReward * accruedSoFarPercent) /
-                    10**4;
+                    10**9;
                 totalReward += accruedTokenReward;
             }
             return totalReward;
