@@ -6,15 +6,26 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract TokenFarm is Ownable {
+    struct Stake {
+        address token;
+        uint256 amount;
+        uint256 lastWithdrawTime;
+    }
+
+    // info APR expressed with 2 decimals
+    // es: 17,81% -> 1781
+    uint256 public APR;
     IERC20 public rewardToken;
     address[] public allowedTokens;
     address[] public stakers;
-    mapping(address => mapping(address => uint256)) public token_staker_amount;
+    mapping(address => Stake[]) public staker_stakes;
     mapping(address => uint256) public staker_distinctTokenNumber;
+    mapping(address => mapping(address => uint256)) public token_staker_amount;
     mapping(address => address) public token_priceFeed;
 
     constructor(address _rewardToken) {
         rewardToken = IERC20(_rewardToken);
+        APR = 1500; // 15%
     }
 
     function stakeTokens(uint256 _amount, address _token) public {
@@ -28,43 +39,43 @@ contract TokenFarm is Ownable {
             stakers.push(msg.sender);
         }
         updatedistinctTokensStaked(msg.sender, _token);
+        Stake memory stake = Stake(_token, _amount, block.timestamp);
+        staker_stakes[msg.sender].push(stake);
         token_staker_amount[_token][msg.sender] += _amount;
 
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
     }
 
-    function unstakeTokens(address _token) public {
+    function unstakeTokenAndWithdrawMyReward(address _token) public {
         // security is vulnerable to reentrancy attacks?
         require(
             isTokenAllowed(_token),
             "Token doesn't exists on the platform yet"
         );
         uint256 balance = token_staker_amount[_token][msg.sender];
-        require(balance > 0, "staked balance is zero");
+        require(balance > 0, "Staked balance is zero");
+
         IERC20(_token).transfer(msg.sender, balance);
+        withdrawMyReward();
+
         token_staker_amount[_token][msg.sender] = 0;
         staker_distinctTokenNumber[msg.sender]--;
 
-        if (staker_distinctTokenNumber[msg.sender] == 0) {
-            for (uint256 i = 0; i < stakers.length; i++) {
-                if (stakers[i] == msg.sender) {
-                    stakers[i] = stakers[stakers.length - 1];
-                    stakers.pop();
-                    break;
-                }
-            }
-        }
+        deleteMyTokenStake(_token);
+
+        maybeRemoveMeFromStakers();
     }
 
-    // issue dapp token for all stakers
-    function issueRewardTokens() public onlyOwner {
-        for (uint256 i = 0; i < stakers.length; i++) {
-            address recipient = stakers[i];
-            uint256 user_TVL = getUserTVL(msg.sender);
+    function withdrawMyReward() public {
+        uint256 myReward = myAccruedReward();
+        require(myReward > 0, "You have not accrued enought RWD tokens");
 
-            // info here you can modify the issuance logic
-            rewardToken.transfer(recipient, user_TVL);
+        Stake[] memory myStakes = staker_stakes[msg.sender];
+        for (uint256 i = 0; i < myStakes.length; i++) {
+            myStakes[i].lastWithdrawTime = block.timestamp;
         }
+
+        rewardToken.transfer(address(this), myReward);
     }
 
     function addAllowedToken(address _token) public onlyOwner {
@@ -87,18 +98,49 @@ contract TokenFarm is Ownable {
         token_priceFeed[token] = priceFeed;
     }
 
-    function getUserTVL(address _user) public view returns (uint256) {
-        if (staker_distinctTokenNumber[_user] > 0) {
+    function changeAPR(uint256 newAPR) public {
+        APR = newAPR;
+    }
+
+    function myTVL() public view returns (uint256) {
+        if (staker_distinctTokenNumber[msg.sender] > 0) {
             uint256 totalValue = 0;
 
             for (uint256 i = 0; i < allowedTokens.length; i++) {
                 address token = allowedTokens[i];
-                uint256 amount = token_staker_amount[token][_user];
+                uint256 amount = token_staker_amount[token][msg.sender];
                 if (amount > 0) {
                     totalValue += getUserTokenValue(amount, token);
                 }
             }
             return totalValue;
+        } else return 0;
+    }
+
+    function myAccruedReward() public view returns (uint256) {
+        if (staker_distinctTokenNumber[msg.sender] > 0) {
+            uint256 totalReward = 0;
+
+            Stake[] memory myStake = staker_stakes[msg.sender];
+            for (uint256 i = 0; i < myStake.length; i++) {
+                uint256 annualTokenReward = 0;
+                uint256 accruedTokenReward = 0;
+                address token = myStake[i].token;
+                uint256 amount = myStake[i].amount;
+                uint256 stakeTime = myStake[i].lastWithdrawTime;
+                annualTokenReward =
+                    (getUserTokenValue(amount, token) * APR) /
+                    10**4;
+                uint256 year = 365 days;
+                uint256 timePassedSinceStake = block.timestamp - stakeTime;
+                uint256 accruedSoFarPercent = (timePassedSinceStake * 10**4) /
+                    year;
+                accruedTokenReward =
+                    (annualTokenReward * accruedSoFarPercent) /
+                    10**4;
+                totalReward += accruedTokenReward;
+            }
+            return totalReward;
         } else return 0;
     }
 
@@ -128,6 +170,28 @@ contract TokenFarm is Ownable {
     function updatedistinctTokensStaked(address user, address token) internal {
         if (token_staker_amount[token][user] <= 0) {
             staker_distinctTokenNumber[user] += 1;
+        }
+    }
+
+    function deleteMyTokenStake(address _token) internal {
+        Stake[] storage myStakes = staker_stakes[msg.sender];
+        for (uint16 i = 0; i < myStakes.length; i++) {
+            if (myStakes[i].token == _token) {
+                myStakes[i] = myStakes[myStakes.length - 1];
+                myStakes.pop();
+            }
+        }
+    }
+
+    function maybeRemoveMeFromStakers() internal {
+        if (staker_distinctTokenNumber[msg.sender] == 0) {
+            for (uint256 i = 0; i < stakers.length; i++) {
+                if (stakers[i] == msg.sender) {
+                    stakers[i] = stakers[stakers.length - 1];
+                    stakers.pop();
+                    break;
+                }
+            }
         }
     }
 }
