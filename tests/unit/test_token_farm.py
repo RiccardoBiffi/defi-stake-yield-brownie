@@ -1,5 +1,6 @@
 from brownie import network, exceptions, chain
 import pytest
+from web3 import Web3
 from scripts.utilities import (
     MockContract,
     get_account,
@@ -322,6 +323,22 @@ def test_get_user_token_value(amount_staked):
 
     # Assert
     assert tvl == 10**DECIMALS
+
+
+def test_get_token_from_value():
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("Only for local testing")
+
+    # Arrange
+    account = get_account()
+    token_farm, reward_token = deploy_token_farm_and_dapp_token()
+    amount = Web3.toWei(1, "ether")
+
+    # Act
+    tfv = token_farm.getTokenFromValue(amount, reward_token, {"from": account})
+
+    # Assert
+    assert tfv == 10**DECIMALS
 
 
 def test_get_token_value():
