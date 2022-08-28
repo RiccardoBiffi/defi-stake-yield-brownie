@@ -1,4 +1,4 @@
-import { Box, Container, Tab } from "@mui/material";
+import { Box, Button, Container, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Token } from "../Main";
 import React, { useState } from "react";
@@ -8,6 +8,7 @@ import { Reward } from "./Reward";
 import { StakeForm } from "./StakeForm";
 import { UnstakeForm } from "./UnstakeForm";
 import styled from "@emotion/styled";
+import { MoreActionsAndInfo } from "./MoreActionsAndInfo";
 
 const TabContainerBackground = styled(Container)`
     padding: 4px!important;
@@ -22,6 +23,12 @@ const TabContainer = styled(Box)`
 `
 const TabListBorder = styled(TabList)`
   border-bottom: 1px solid lightgray;
+`
+const UnstakeAllButton = styled(Button)`
+    margin: 3px 20px 3px auto;
+    border: 2px solid #1976d2 !important;
+    border-radius: 8px;
+    font-weight: bold;
 `
 const TabContent = styled.div`
     flex-direction: column;
@@ -70,6 +77,7 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                     key={i} />
                 )
               })}
+              <UnstakeAllButton>Unstake all</UnstakeAllButton>
             </TabListBorder>
             {supportedTokens.map((token, i) => {
               return (
@@ -85,6 +93,7 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                       <UnstakeForm token={token} />
                     </TabContent>
                   </BoxFlex>
+                  <MoreActionsAndInfo token={token} />
                 </TabPanel>
               )
             })}

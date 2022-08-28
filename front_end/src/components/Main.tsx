@@ -8,6 +8,7 @@ import eth from "../images/eth.png";
 import dai from "../images/dai.png";
 import { YourWallet } from "./yourWallet/YourWallet";
 import styled from "@emotion/styled";
+import { MoreInfo } from "./MoreInfo";
 
 const Title = styled.h1`
     color: white;
@@ -80,7 +81,13 @@ export const Main = () => {
         <>
             <Title>Dapp Token App</Title>
             {isConnected && isCorrectChain ?
-                <YourWallet supportedTokens={supportedTokens} /> :
+                (
+                    <>
+                        <YourWallet supportedTokens={supportedTokens} />
+                        <MoreInfo />
+                    </>
+                )
+                :
                 <Connect>
                     {
                         isCorrectChain ?
