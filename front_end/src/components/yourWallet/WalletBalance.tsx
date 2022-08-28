@@ -1,6 +1,5 @@
 import { Token } from "../Main";
 import { useEthers, useTokenBalance } from "@usedapp/core";
-import { formatUnits } from "ethers/lib/utils";
 import { BalanceMsg } from "../BalanceMsg"
 import { formatBigNumber } from "../../utils";
 
