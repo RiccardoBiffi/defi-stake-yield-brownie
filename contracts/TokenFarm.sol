@@ -75,6 +75,10 @@ contract TokenFarm is Ownable {
         for (uint256 i = 0; i < myStakes.length; i++) {
             myStakes[i].lastWithdrawTime = block.timestamp;
         }
+
+        //todo update APR dynamically
+        //remainingRWD = rewardToken.balance(address(this));
+        //previousRWD = remainingRWD + myReward;
     }
 
     function addAllowedToken(address _token) public onlyOwner {

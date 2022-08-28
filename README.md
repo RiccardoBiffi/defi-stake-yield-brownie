@@ -32,3 +32,7 @@
     - We copy the build folder for dynamic addresses (eg. my deployed contracts)
 
 - An hook is like a component but more functionality-oriented
+
+todo dynamic APR on TokenFarm remaining tresaury
+
+todo contract to buy RWD for DAI
