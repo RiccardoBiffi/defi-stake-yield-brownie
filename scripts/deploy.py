@@ -25,6 +25,7 @@ def deploy_token_farm_and_dapp_token(update_FE=False):
     reward_token.transfer(
         token_farm.address, reward_token.totalSupply() - KEPT_BALANCE, {"from": account}
     )
+    # todo add allowed tokens
 
     weth_token = get_contract(MockContract.WETH_TOKEN)
     fau_token = get_contract(MockContract.FAU_TOKEN)
