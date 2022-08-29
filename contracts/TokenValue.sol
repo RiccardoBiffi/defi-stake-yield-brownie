@@ -9,10 +9,9 @@ abstract contract TokenValue is ITokenValue {
 
     function setTokenPriceFeed(address token, address priceFeed) public virtual;
 
-    function getUserTokenValue(uint256 amount, address token)
+    function getValueFromToken(uint256 amount, address token)
         public
         view
-        virtual
         returns (uint256)
     {
         (uint256 price, uint256 decimals) = getTokenValue(token);
