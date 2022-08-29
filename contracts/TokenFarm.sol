@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "./AllowTokens.sol";
 
-contract TokenFarm is Ownable {
+contract TokenFarm is AllowTokens {
     struct Stake {
         address token;
         uint256 amount;
@@ -16,7 +17,6 @@ contract TokenFarm is Ownable {
     // es: 17,81% -> 1781
     uint256 public APR;
     IERC20 public rewardToken;
-    address[] public allowedTokens;
     address[] public stakers;
     mapping(address => Stake[]) public staker_stakes;
     mapping(address => uint256) public staker_distinctTokenNumber;
@@ -79,19 +79,6 @@ contract TokenFarm is Ownable {
         //todo update APR dynamically
         //remainingRWD = rewardToken.balance(address(this));
         //previousRWD = remainingRWD + myReward;
-    }
-
-    function addAllowedToken(address _token) public onlyOwner {
-        allowedTokens.push(_token);
-    }
-
-    function isTokenAllowed(address _token) public view returns (bool) {
-        for (uint256 i = 0; i < allowedTokens.length; i++) {
-            if (allowedTokens[i] == _token) {
-                return true;
-            }
-        }
-        return false;
     }
 
     function setTokenPriceFeed(address token, address priceFeed)
