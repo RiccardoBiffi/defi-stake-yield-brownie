@@ -4,7 +4,7 @@ import pytest
 from scripts.utilities import get_account, LOCAL_BLOCKCHAIN_ENVIRONMENTS
 
 
-def test_can_deploy_token():
+def test_can_deploy_contract():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 

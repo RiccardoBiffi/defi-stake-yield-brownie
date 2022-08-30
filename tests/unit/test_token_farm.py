@@ -11,7 +11,7 @@ from scripts.utilities import (
 from scripts.deploy import deploy_token_farm_and_dapp_token
 
 
-def test_can_deploy_token_farm():
+def test_can_deploy_contract():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
