@@ -4,10 +4,15 @@ pragma solidity ^0.8.0;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./interfaces/ITokenValue.sol";
 
-abstract contract TokenValue is ITokenValue {
+contract TokenValue is ITokenValue {
     mapping(address => address) public token_priceFeed;
 
-    function setTokenPriceFeed(address token, address priceFeed) public virtual;
+    function setTokenPriceFeed(address token, address priceFeed)
+        public
+        virtual
+    {
+        token_priceFeed[token] = priceFeed;
+    }
 
     function getValueFromToken(uint256 amount, address token)
         public

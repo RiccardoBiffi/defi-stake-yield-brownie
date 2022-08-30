@@ -52,6 +52,6 @@ contract RewardToken is ERC20, AllowTokens, TokenValue {
         override
         onlyOwner
     {
-        token_priceFeed[token] = priceFeed;
+        super.setTokenPriceFeed(token, priceFeed);
     }
 }
