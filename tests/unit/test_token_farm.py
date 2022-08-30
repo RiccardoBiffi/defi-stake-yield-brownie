@@ -189,7 +189,6 @@ def test_withdraw_my_reward_fail_not_enought():
 
 # endregion
 
-
 # region setTokenPriceFeed
 def test_set_token_price_feed_success():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
