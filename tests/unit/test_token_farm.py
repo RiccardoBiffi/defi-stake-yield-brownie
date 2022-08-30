@@ -190,57 +190,6 @@ def test_withdraw_my_reward_fail_not_enought():
 # endregion
 
 
-def test_add_allowed_tokens():
-    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
-        pytest.skip("Only for local testing")
-
-    # Arrange
-    account = get_account()
-    token_farm, reward_token = deploy_token_farm_and_dapp_token()
-    token_farm.addAllowedToken(reward_token.address, {"from": account})
-
-    # Act
-
-    # Assert
-    assert token_farm.allowedTokens(0) == reward_token.address
-
-
-# region isTokenAllowed
-def test_check_token_allowed_true():
-    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
-        pytest.skip("Only for local testing")
-
-    # Arrange
-    account = get_account()
-    token_farm, reward_token = deploy_token_farm_and_dapp_token()
-    token_farm.addAllowedToken(reward_token.address, {"from": account})
-
-    # Act
-    answer = token_farm.isTokenAllowed(reward_token, {"from": account})
-
-    # Assert
-    assert answer == True
-
-
-def test_check_token_allowed_false():
-    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
-        pytest.skip("Only for local testing")
-
-    # Arrange
-    account = get_account()
-    token_farm, reward_token = deploy_token_farm_and_dapp_token()
-    not_allowed_token = "0x4194cBDC3dbcd3E11a07892e7bA5c3394048Cc87"
-    token_farm.addAllowedToken(reward_token.address, {"from": account})
-
-    # Act
-    answer = token_farm.isTokenAllowed(not_allowed_token, {"from": account})
-
-    # Assert
-    assert answer == False
-
-
-# endregion
-
 # region setTokenPriceFeed
 def test_set_token_price_feed_success():
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
