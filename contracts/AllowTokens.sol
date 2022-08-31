@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract AllowTokens is IAllowTokens, Ownable {
     address[] public allowedTokens;
 
+    event AllowToken(address admin, address token);
+    event DisallowToken(address admin, address token);
+
     function addAllowedToken(address token) public onlyOwner {
         bool exists = false;
         for (uint256 i = 0; i < allowedTokens.length; i++) {
