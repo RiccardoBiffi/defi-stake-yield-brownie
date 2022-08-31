@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 interface ITokenValue {
     function setTokenPriceFeed(address token, address priceFeed) external;
 
+    function removeTokenPriceFeed(address token) external;
+
     function getValueFromToken(uint256 amount, address token)
         external
         view

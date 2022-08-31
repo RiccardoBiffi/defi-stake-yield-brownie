@@ -7,11 +7,20 @@ import "./interfaces/ITokenValue.sol";
 contract TokenValue is ITokenValue {
     mapping(address => address) public token_priceFeed;
 
+    event AddedPriceFeed(address admin, address token, address priceFeed);
+    event RemovedPriceFeed(address admin, address token);
+
     function setTokenPriceFeed(address token, address priceFeed)
         public
         virtual
     {
         token_priceFeed[token] = priceFeed;
+        emit AddedPriceFeed(msg.sender, token, priceFeed);
+    }
+
+    function removeTokenPriceFeed(address token) public virtual {
+        delete token_priceFeed[token];
+        emit RemovedPriceFeed(msg.sender, token);
     }
 
     function getValueFromToken(uint256 amount, address token)
