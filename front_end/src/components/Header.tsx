@@ -1,4 +1,4 @@
-import { Kovan, useEthers } from "@usedapp/core";
+import { Goerli, useEthers } from "@usedapp/core";
 import { Button } from "@mui/material";
 import styled from "@emotion/styled"
 
@@ -18,7 +18,7 @@ const Account = styled(Button)`
 export const Header = () => {
   const { account, activateBrowserWallet, deactivate, switchNetwork, chainId } = useEthers();
   const isConnected = !!account;
-  const isCorrectChain = chainId === Kovan.chainId;
+  const isCorrectChain = chainId === Goerli.chainId;
 
   const prettyPrint = (address: string) => {
     return address.slice(0, 6) + "..." + address.slice(address.length - 4, address.length);
@@ -32,8 +32,8 @@ export const Header = () => {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => switchNetwork(Kovan.chainId)}>
-              Switch to Kovan
+              onClick={() => switchNetwork(Goerli.chainId)}>
+              Switch to {Goerli.chainName}
             </Button>
           )
           :

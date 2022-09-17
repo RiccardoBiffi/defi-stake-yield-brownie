@@ -1,6 +1,7 @@
 {
-    "42": "kovan",
-    "4": "rinkeby",
     "1": "mainnet",
+    "4": "rinkeby",
+    "5": "goerli",
+    "42": "kovan",
     "1337": "dev"
 }

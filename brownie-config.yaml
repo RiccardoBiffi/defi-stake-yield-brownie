@@ -52,4 +52,8 @@ networks:
     dai_usd_feed: '0x777A68032a88E5A84678A77Af2CD65A7b3c0775a'
     verify: True
   goerli:
+    weth_token: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
+    fau_token: '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc'
+    eth_usd_feed: '0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e'
+    dai_usd_feed: '0x0d79df66BE487753B02D015Fb622DED7f0E9798d'
     verify: True

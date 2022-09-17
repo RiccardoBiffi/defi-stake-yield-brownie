@@ -1,4 +1,4 @@
-import { Kovan, useEthers } from "@usedapp/core";
+import { Goerli, useEthers } from "@usedapp/core";
 import helper from "../helper-config.json";
 import networkMapping from "../chain_info/deployments/map.json"
 import { constants } from "ethers";
@@ -34,7 +34,7 @@ export const Main = () => {
     const { account, chainId } = useEthers();
     const network = chainId ? helper[chainId] : "dev";
     const isConnected = !!account;
-    const isCorrectChain = chainId === Kovan.chainId;
+    const isCorrectChain = chainId === Goerli.chainId;
 
     let supportedTokens: Array<Token> = [];
 
