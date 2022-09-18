@@ -100,7 +100,7 @@ export const Reward = ({ token }: RewardProps) => {
             token ?
               <>
                 <Message>
-                  Your RWD
+                  Your accrued RWD
                   <InfoTooltip
                     title={informationString}
                     placement="right"

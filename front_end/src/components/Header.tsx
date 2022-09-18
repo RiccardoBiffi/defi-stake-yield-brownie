@@ -37,7 +37,7 @@ export const Header = () => {
 
   return (
     <Container>
-      <Title>Dapp Token App</Title>
+      <Title>Stake Rewards!</Title>
       <Connection>
         <div>
           {!isCorrectChain ?
