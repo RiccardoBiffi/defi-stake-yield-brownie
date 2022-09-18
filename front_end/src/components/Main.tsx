@@ -10,11 +10,6 @@ import { YourWallet } from "./yourWallet/YourWallet";
 import styled from "@emotion/styled";
 import { MoreInfo } from "./MoreInfo";
 
-const Title = styled.h1`
-    color: white;
-    text-align: center;
-    padding: 8px;
-`
 
 const Connect = styled.h2`
     color: white;
@@ -79,7 +74,6 @@ export const Main = () => {
 
     return (
         <>
-            <Title>Dapp Token App</Title>
             {isConnected && isCorrectChain ?
                 (
                     <>
