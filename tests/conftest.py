@@ -1,12 +1,17 @@
 from web3 import Web3
 import pytest
-from brownie import AllowTokens, TokenValue, MockV3Aggregator
+from brownie import RewardToken, AllowTokens, TokenValue, MockV3Aggregator
 from scripts.utilities import get_account
 
 
 @pytest.fixture
 def amount_staked():
     return Web3.toWei(1, "ether")
+
+
+@pytest.fixture
+def supply():
+    return Web3.toWei(1000, "ether")
 
 
 @pytest.fixture
@@ -27,6 +32,11 @@ def allow_tokens(account):
 @pytest.fixture
 def token_value(account):
     return TokenValue.deploy({"from": account})
+
+
+@pytest.fixture
+def reward_token(supply, account):
+    return RewardToken.deploy(supply, {"from": account})
 
 
 @pytest.fixture
