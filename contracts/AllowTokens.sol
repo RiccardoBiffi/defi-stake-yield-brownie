@@ -10,7 +10,7 @@ contract AllowTokens is IAllowTokens, Ownable {
     event AllowToken(address admin, address token);
     event DisallowToken(address admin, address token);
 
-    function addAllowedToken(address token) public onlyOwner {
+    function addAllowedToken(address token) public override onlyOwner {
         bool exists = false;
         for (uint256 i = 0; i < allowedTokens.length; i++) {
             if (allowedTokens[i] == token) {
@@ -24,7 +24,7 @@ contract AllowTokens is IAllowTokens, Ownable {
         emit AllowToken(msg.sender, token);
     }
 
-    function removeAllowedToken(address token) public onlyOwner {
+    function removeAllowedToken(address token) public override onlyOwner {
         uint256 tokenIndex = allowedTokens.length;
         for (uint256 i = 0; i < allowedTokens.length; i++) {
             if (allowedTokens[i] == token) {
@@ -42,7 +42,7 @@ contract AllowTokens is IAllowTokens, Ownable {
         emit DisallowToken(msg.sender, token);
     }
 
-    function isTokenAllowed(address token) public view returns (bool) {
+    function isTokenAllowed(address token) public view override returns (bool) {
         for (uint256 i = 0; i < allowedTokens.length; i++) {
             if (allowedTokens[i] == token) {
                 return true;

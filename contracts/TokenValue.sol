@@ -13,12 +13,13 @@ contract TokenValue is ITokenValue {
     function setTokenPriceFeed(address token, address priceFeed)
         public
         virtual
+        override
     {
         token_priceFeed[token] = priceFeed;
         emit AddedPriceFeed(msg.sender, token, priceFeed);
     }
 
-    function removeTokenPriceFeed(address token) public virtual {
+    function removeTokenPriceFeed(address token) public virtual override {
         delete token_priceFeed[token];
         emit RemovedPriceFeed(msg.sender, token);
     }
@@ -26,6 +27,7 @@ contract TokenValue is ITokenValue {
     function getValueFromToken(uint256 amount, address token)
         public
         view
+        override
         returns (uint256)
     {
         (uint256 price, uint256 decimals) = getTokenValue(token);
@@ -35,6 +37,7 @@ contract TokenValue is ITokenValue {
     function getTokenFromValue(uint256 amount, address token)
         public
         view
+        override
         returns (uint256)
     {
         (uint256 price, uint256 decimals) = getTokenValue(token);
@@ -44,6 +47,7 @@ contract TokenValue is ITokenValue {
     function getTokenValue(address token)
         public
         view
+        override
         returns (uint256, uint256)
     {
         address tokenPriceFeed = token_priceFeed[token];
