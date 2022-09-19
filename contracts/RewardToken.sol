@@ -7,6 +7,7 @@ import "./AllowTokens.sol";
 import "./TokenValue.sol";
 
 contract RewardToken is ERC20, AllowTokens, TokenValue {
+    uint256 public buyableRWD;
     address[] public tokenWithDeposits;
     mapping(address => uint256) public token_deposit;
 
@@ -19,17 +20,26 @@ contract RewardToken is ERC20, AllowTokens, TokenValue {
     event CashOut(address admin);
 
     constructor(uint256 initialSupply) ERC20("Reward", "RWD") {
-        _mint(msg.sender, initialSupply);
+        buyableRWD = initialSupply / 2;
+        _mint(address(this), buyableRWD);
+        _mint(msg.sender, initialSupply - buyableRWD);
     }
 
     function buy(uint256 amount, address exchangeToken) public {
+        require(
+            isTokenAllowed(exchangeToken),
+            "Cannot buy RWD with this token"
+        );
+        require(amount > 0, "Amount must be more than 0 tokens");
+
         IERC20(exchangeToken).transferFrom(msg.sender, address(this), amount);
         tokenWithDeposits.push(exchangeToken);
         token_deposit[exchangeToken] = amount;
 
         uint256 valueSent = getValueFromToken(amount, exchangeToken);
         uint256 buyedRwdTokens = getTokenFromValue(valueSent, address(this));
-        transfer(msg.sender, buyedRwdTokens);
+        _transfer(address(this), msg.sender, buyedRwdTokens);
+        buyableRWD -= buyedRwdTokens;
 
         emit Exchange(msg.sender, exchangeToken, amount, buyedRwdTokens);
     }

@@ -9,7 +9,7 @@ import os
 import shutil
 
 INITIAL_SUPPLY = Web3.toWei(1000, "ether")
-KEPT_BALANCE = INITIAL_SUPPLY * 0.01
+KEPT_BALANCE = (INITIAL_SUPPLY / 2) * 0.01
 
 
 def deploy_token_farm_and_dapp_token(update_FE=False):
@@ -23,19 +23,28 @@ def deploy_token_farm_and_dapp_token(update_FE=False):
 
     # fill the reward token supply of the farm
     reward_token.transfer(
-        token_farm.address, reward_token.totalSupply() - KEPT_BALANCE, {"from": account}
+        token_farm.address,
+        reward_token.balanceOf(account) - KEPT_BALANCE,
+        {"from": account},
     )
-    # todo add allowed tokens
 
     weth_token = get_contract(MockContract.WETH_TOKEN)
     fau_token = get_contract(MockContract.FAU_TOKEN)
-    allowed_token_addresses_and_feeds = {
+
+    tf_allowed_token_addresses_and_feeds = {
         reward_token: get_contract(MockContract.DAI_USD_FEED),
         fau_token: get_contract(MockContract.DAI_USD_FEED),
         weth_token: get_contract(MockContract.ETH_USD_FEED),
     }
 
-    add_allowed_tokens(token_farm, allowed_token_addresses_and_feeds, account)
+    rt_allowed_token_addresses_and_feeds = {
+        reward_token: get_contract(MockContract.DAI_USD_FEED),
+        fau_token: get_contract(MockContract.DAI_USD_FEED),
+    }
+
+    add_allowed_tokens(token_farm, tf_allowed_token_addresses_and_feeds, account)
+    add_allowed_tokens(reward_token, rt_allowed_token_addresses_and_feeds, account)
+
     if update_FE:
         update_fron_end()
     return token_farm, reward_token
