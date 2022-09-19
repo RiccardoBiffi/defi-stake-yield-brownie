@@ -25,7 +25,7 @@ def test_can_deploy_contract():
 
 
 # region stakeTokens
-def test_stake_token_success(amount_staked):
+def test_stake_token_success(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -35,24 +35,20 @@ def test_stake_token_success(amount_staked):
     previous_balance = reward_token.balanceOf(token_farm.address)
 
     # Act
-    reward_token.approve(token_farm.address, amount_staked, {"from": account})
-    tx = token_farm.stakeTokens(amount_staked, reward_token.address, {"from": account})
+    reward_token.approve(token_farm.address, amount, {"from": account})
+    tx = token_farm.stakeTokens(amount, reward_token.address, {"from": account})
     (token, amount, _) = token_farm.staker_stakes(account.address, 0)
 
     # Assert
     assert token_farm.stakers(0) == account
     assert token_farm.staker_distinctTokenNumber(account) == 1
-    assert (token, amount, _) == (reward_token.address, amount_staked, _)
-    assert (
-        token_farm.token_staker_amount(reward_token.address, account) == amount_staked
-    )
-    assert (
-        reward_token.balanceOf(token_farm.address) - previous_balance == amount_staked
-    )
+    assert (token, amount, _) == (reward_token.address, amount, _)
+    assert token_farm.token_staker_amount(reward_token.address, account) == amount
+    assert reward_token.balanceOf(token_farm.address) - previous_balance == amount
     return token_farm, reward_token
 
 
-def test_stake_token_fail_low_amount(amount_staked):
+def test_stake_token_fail_low_amount(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -61,14 +57,14 @@ def test_stake_token_fail_low_amount(amount_staked):
     token_farm, reward_token = deploy_token_farm_and_dapp_token()
 
     # Act
-    reward_token.approve(token_farm.address, amount_staked, {"from": account})
+    reward_token.approve(token_farm.address, amount, {"from": account})
 
     # Assert
     with pytest.raises(exceptions.VirtualMachineError):
         token_farm.stakeTokens(0, reward_token.address, {"from": account})
 
 
-def test_stake_token_fail_not_allowed(amount_staked):
+def test_stake_token_fail_not_allowed(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
@@ -78,7 +74,7 @@ def test_stake_token_fail_not_allowed(amount_staked):
     not_allowed_token = "0x4194cBDC3dbcd3E11a07892e7bA5c3394048Cc87"
 
     # Act
-    reward_token.approve(token_farm.address, amount_staked, {"from": account})
+    reward_token.approve(token_farm.address, amount, {"from": account})
 
     # Assert
     with pytest.raises(exceptions.VirtualMachineError):
@@ -88,13 +84,13 @@ def test_stake_token_fail_not_allowed(amount_staked):
 # endregion
 
 # region unstakeTokens
-def test_unstake_token_success(amount_staked):
+def test_unstake_token_success(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    token_farm, reward_token = test_stake_token_success(amount_staked)
+    token_farm, reward_token = test_stake_token_success(amount)
     chain.sleep(1000)
     chain.mine(1)
     reward = token_farm.getUserAccruedReward(account, {"from": account})
@@ -104,7 +100,7 @@ def test_unstake_token_success(amount_staked):
     token_farm.unstakeTokenAndWithdrawMyReward(reward_token.address, {"from": account})
 
     # Assert
-    assert reward_token.balanceOf(account) == previous_balance + amount_staked + reward
+    assert reward_token.balanceOf(account) == previous_balance + amount + reward
     assert token_farm.token_staker_amount(reward_token.address, account) == 0
     assert token_farm.staker_distinctTokenNumber(account) == 0
     # hack check for empty myStakes array
@@ -149,13 +145,13 @@ def test_unstake_token_fail_zero_balance():
 # endregion
 
 # region issueRerwardTokens
-def test_withdraw_my_reward_success(amount_staked):
+def test_withdraw_my_reward_success(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    token_farm, reward_token = test_stake_token_success(amount_staked)
+    token_farm, reward_token = test_stake_token_success(amount)
     starting_balance = reward_token.balanceOf(account)
     chain.sleep(1000)
     chain.mine(1)
@@ -229,13 +225,13 @@ def test_set_token_price_feed_fail_no_owner():
 # endregion
 
 # region getUserTVL
-def test_get_user_tvl_more_than_zero(amount_staked):
+def test_get_user_tvl_more_than_zero(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    token_farm, _ = test_stake_token_success(amount_staked)
+    token_farm, _ = test_stake_token_success(amount)
 
     # Act
     tvl = token_farm.getUserTVL(account, {"from": account})
@@ -262,16 +258,16 @@ def test_get_user_tvl_zero():
 # endregion
 
 
-def test_get_user_token_value(amount_staked):
+def test_get_user_token_value(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    token_farm, reward_token = test_stake_token_success(amount_staked)
+    token_farm, reward_token = test_stake_token_success(amount)
 
     # Act
-    tvl = token_farm.getUserTokenValue(amount_staked, reward_token, {"from": account})
+    tvl = token_farm.getUserTokenValue(amount, reward_token, {"from": account})
 
     # Assert
     assert tvl == 10**DECIMALS
@@ -323,13 +319,13 @@ def test_get_user_accrued_reward_zero():
     assert ar == 0
 
 
-def test_get_user_accrued_reward_more_than_zero(amount_staked):
+def test_get_user_accrued_reward_more_than_zero(amount):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("Only for local testing")
 
     # Arrange
     account = get_account()
-    token_farm, _ = test_stake_token_success(amount_staked)
+    token_farm, _ = test_stake_token_success(amount)
     chain.sleep(1000)
     chain.mine(1)
 
