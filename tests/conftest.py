@@ -48,13 +48,23 @@ def dai(amount, account, reward_token):
 
 
 @pytest.fixture
-def token_value_DAI(decimals, account):
-    return MockV3Aggregator.deploy(decimals, 1 * 10**decimals, {"from": account})
+def DAI_price(decimals):
+    return 1 * 10**decimals
 
 
 @pytest.fixture
-def token_value_ETH(decimals, account):
-    return MockV3Aggregator.deploy(decimals, 1560 * 10**decimals, {"from": account})
+def token_value_DAI(DAI_price, decimals, account):
+    return MockV3Aggregator.deploy(decimals, DAI_price, {"from": account})
+
+
+@pytest.fixture
+def ETH_price(decimals):
+    return 1560 * 10**decimals
+
+
+@pytest.fixture
+def token_value_ETH(ETH_price, decimals, account):
+    return MockV3Aggregator.deploy(decimals, ETH_price, {"from": account})
 
 
 @pytest.fixture
