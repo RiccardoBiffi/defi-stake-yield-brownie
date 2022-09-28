@@ -82,3 +82,7 @@ def copy_folder_to_front_end(src, dest):
 def main():
     deploy_token_farm_and_dapp_token(True)
     time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
