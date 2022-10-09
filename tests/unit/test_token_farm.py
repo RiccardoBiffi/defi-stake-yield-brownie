@@ -100,7 +100,7 @@ def test_unstake_token_success(amount):
     token_farm.unstakeTokenAndWithdrawMyReward(reward_token.address, {"from": account})
 
     # Assert
-    assert reward_token.balanceOf(account) == previous_balance + amount + reward
+    assert reward_token.balanceOf(account) >= previous_balance + amount + reward
     assert token_farm.token_staker_amount(reward_token.address, account) == 0
     assert token_farm.staker_distinctTokenNumber(account) == 0
     # hack check for empty myStakes array
@@ -161,7 +161,7 @@ def test_withdraw_my_reward_success(amount):
     token_farm.withdrawMyReward({"from": account})
 
     # Assert
-    assert reward_token.balanceOf(account) == starting_balance + reward
+    assert reward_token.balanceOf(account) >= starting_balance + reward
     chain.sleep(1000)
     chain.mine(1)
     reward = token_farm.getUserAccruedReward(account, {"from": account})
