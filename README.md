@@ -33,4 +33,6 @@
 
 - An hook is like a component but more functionality-oriented
 
+NOTES: to verify a contract, ALL its depencies must be compiled with the same compiler version.
+
 todo dynamic APR on TokenFarm remaining tresaury

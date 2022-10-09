@@ -12,13 +12,24 @@ INITIAL_SUPPLY = Web3.toWei(1000, "ether")
 KEPT_BALANCE = (INITIAL_SUPPLY / 2) * 0.01
 
 
+def publish_source_policy():
+    return config["networks"][network.show_active()].get("verify", False)
+
+
 def deploy_token_farm_and_dapp_token(update_FE=False):
     account = get_account()
-    reward_token = RewardToken.deploy(INITIAL_SUPPLY, {"from": account})
+    # print(RewardToken.get_verification_info())
+    # print(TokenFarm.get_verification_info())
+
+    reward_token = RewardToken.deploy(
+        INITIAL_SUPPLY,
+        {"from": account},
+        publish_source=publish_source_policy(),
+    )
     token_farm = TokenFarm.deploy(
         reward_token.address,
         {"from": account},
-        publish_source=config["networks"][network.show_active()].get("verify", False),
+        publish_source=publish_source_policy(),
     )
 
     # fill the reward token supply of the farm
