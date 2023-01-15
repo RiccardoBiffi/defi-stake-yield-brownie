@@ -18,9 +18,6 @@ def publish_source_policy():
 
 def deploy_token_farm_and_dapp_token(update_FE=False):
     account = get_account()
-    # print(RewardToken.get_verification_info())
-    # print(TokenFarm.get_verification_info())
-
     reward_token = RewardToken.deploy(
         INITIAL_SUPPLY,
         {"from": account},
