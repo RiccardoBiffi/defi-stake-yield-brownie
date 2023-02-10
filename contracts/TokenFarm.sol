@@ -47,7 +47,6 @@ contract TokenFarm is AllowTokens {
     }
 
     function unstakeTokenAndWithdrawMyReward(address _token) public {
-        // security is vulnerable to reentrancy attacks?
         require(
             isTokenAllowed(_token),
             "Token doesn't exists on the platform yet"
@@ -55,26 +54,25 @@ contract TokenFarm is AllowTokens {
         uint256 balance = token_staker_amount[_token][msg.sender];
         require(balance > 0, "Staked balance is zero");
 
-        IERC20(_token).transfer(msg.sender, balance);
         withdrawMyReward();
-
         token_staker_amount[_token][msg.sender] = 0;
         staker_distinctTokenNumber[msg.sender]--;
-
+        maybeRemoveMeFromStakers();
         deleteMyTokenStake(_token);
 
-        maybeRemoveMeFromStakers();
+        IERC20(_token).transfer(msg.sender, balance);
     }
 
     function withdrawMyReward() public {
         uint256 myReward = getUserAccruedReward(msg.sender);
         require(myReward > 0, "You have not accrued enought RWD tokens");
-        rewardToken.transfer(msg.sender, myReward);
 
         Stake[] storage myStakes = staker_stakes[msg.sender];
         for (uint256 i = 0; i < myStakes.length; i++) {
             myStakes[i].lastWithdrawTime = block.timestamp;
         }
+
+        rewardToken.transfer(msg.sender, myReward);
 
         //todo update APR dynamically
         //remainingRWD = rewardToken.balance(address(this));
