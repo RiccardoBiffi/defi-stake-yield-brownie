@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Stake and Yield demo",
+  "name": "Stake and Yield DeFi app demo",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,5 +1,6 @@
 {
   "name": "front_end",
+  "homepage": "https://riccardobiffi.github.io/defi-stake-yield-brownie/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
