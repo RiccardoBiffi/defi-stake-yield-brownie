@@ -17,7 +17,7 @@ export const useUnstakeTokens = (tokenAddress: string) => {
     const tokenFarm = new Contract(tokenFarmAddr, tokenFarmInterface);
 
     const erc20Interface = new utils.Interface(erc20_abi);
-    const erc20 = new Contract(tokenAddress, erc20Interface);
+    // const erc20 = new Contract(tokenAddress, erc20Interface);
 
     //unstake
     const { send: unstakeSend, state: unstakeState } =

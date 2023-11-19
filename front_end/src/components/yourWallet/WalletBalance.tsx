@@ -1,23 +1,22 @@
 import { Token } from "../Main";
 import { useEthers, useTokenBalance } from "@usedapp/core";
-import { formatUnits } from "ethers/lib/utils";
-import { BalanceMsg } from "../BalanceMsg"
+import { BalanceMsg } from "../BalanceMsg";
 import { formatBigNumber } from "../../utils";
 
-
 export interface WalletBalanceProps {
-    token: Token;
+  token: Token;
 }
 
 export const WalletBalance = ({ token }: WalletBalanceProps) => {
-    const { image, address: token_addr, name } = token;
-    const { account } = useEthers();
-    const tokenBalance = useTokenBalance(token_addr, account)?.toString()
-    const balanceFormatted = formatBigNumber(tokenBalance, 18, 4)
-    return (
-        <BalanceMsg
-            label={`Your ${name} balance is`}
-            token={token}
-            amount={balanceFormatted} />
-    )
-}
+  const { address: token_addr, name } = token;
+  const { account } = useEthers();
+  const tokenBalance = useTokenBalance(token_addr, account)?.toString();
+  const balanceFormatted = formatBigNumber(tokenBalance, 18, 4);
+  return (
+    <BalanceMsg
+      label={`Your ${name} balance is`}
+      token={token}
+      amount={balanceFormatted}
+    />
+  );
+};

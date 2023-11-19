@@ -1,4 +1,4 @@
-import { Falsy, useCall, useEthers } from "@usedapp/core"
+import { useCall, useEthers } from "@usedapp/core"
 import { constants, Contract, utils } from "ethers";
 import networkMapping from "../chain_info/deployments/map.json";
 import TokenFarm from "../chain_info/contracts/TokenFarm.json";
