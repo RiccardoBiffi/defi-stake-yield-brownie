@@ -1,6 +1,6 @@
 import { useEthers, useContractFunction } from "@usedapp/core";
 import TokenFarm from "../chain_info/contracts/TokenFarm.json";
-import ERC20 from "../chain_info/contracts/dependencies/OpenZeppelin/openzeppelin-contracts@4.7.1/ERC20.json";
+// import ERC20 from "../chain_info/contracts/dependencies/OpenZeppelin/openzeppelin-contracts@4.7.1/ERC20.json";
 import networkMapping from "../chain_info/deployments/map.json";
 import { constants, Contract, utils } from "ethers";
 
@@ -8,7 +8,7 @@ import { constants, Contract, utils } from "ethers";
 export const useUnstakeTokens = (tokenAddress: string) => {
     const { chainId } = useEthers();
     const { abi: tf_abi } = TokenFarm;
-    const { abi: erc20_abi } = ERC20;
+    // const { abi: erc20_abi } = ERC20;
 
     const tokenFarmAddr = chainId ?
         networkMapping[String(chainId)]["TokenFarm"][0] :
