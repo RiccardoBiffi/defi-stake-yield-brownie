@@ -6,11 +6,10 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "src/**"
-      - "public/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".env"
+      - "front_end/src/**"
+      - "front_end/public/**"
+      - "front_end/package.json"
+      - "front_end/package-lock.json"
       - ".github/workflows/deploy.yml"
 
 env:
